@@ -15,7 +15,7 @@ import net.notejam.spring.user.constraints.Password;
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
  */
 @EqualProperties(value = { "repeatedPassword", "newPassword" }, violationOnPropery = true)
-public class Account {
+public final class Account {
 
     /**
      * The current password.

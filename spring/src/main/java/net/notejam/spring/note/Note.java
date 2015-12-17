@@ -26,7 +26,7 @@ import net.notejam.spring.user.User;
  */
 @Entity
 @Table(indexes = { @Index(columnList = "updated"), @Index(columnList = "name") })
-public class Note extends AbstractPersistable<Integer>implements Owned {
+public final class Note extends AbstractPersistable<Integer>implements Owned {
 
     private static final long serialVersionUID = -1445367127777923455L;
 

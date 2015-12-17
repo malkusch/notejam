@@ -17,7 +17,7 @@ import net.notejam.spring.user.signup.constraints.UniqueEmail;
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
  */
 @EqualProperties(value = { "repeatedPassword", "password" }, violationOnPropery = true)
-public class Signup {
+public final class Signup {
 
     /**
      * The email address.

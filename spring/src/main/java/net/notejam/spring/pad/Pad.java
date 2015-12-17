@@ -23,7 +23,7 @@ import net.notejam.spring.user.User;
  */
 @Entity
 @Table(indexes = @Index(columnList = "created"))
-public class Pad extends AbstractPersistable<Integer>implements Owned {
+public final class Pad extends AbstractPersistable<Integer>implements Owned {
 
     private static final long serialVersionUID = -1186217744141902841L;
 

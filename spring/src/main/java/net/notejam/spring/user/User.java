@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
  */
 @Entity
-public class User extends AbstractPersistable<Integer> {
+public final class User extends AbstractPersistable<Integer> {
 
     private static final long serialVersionUID = -7874055769861590146L;
 

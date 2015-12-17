@@ -18,7 +18,7 @@ import net.notejam.spring.user.User;
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
  */
 @Entity
-public class RecoveryToken extends AbstractPersistable<Integer> {
+public final class RecoveryToken extends AbstractPersistable<Integer> {
 
     private static final long serialVersionUID = 5923083445165411558L;
 
