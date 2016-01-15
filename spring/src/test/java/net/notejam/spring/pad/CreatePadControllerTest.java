@@ -50,10 +50,10 @@ public class CreatePadControllerTest {
      */
     @Test
     public void padCanBeCreated() throws Exception {
-        final String name = "name";
+        final Name name = new Name("name");
         
         mockMvcProvider.getMockMvc().perform(post(URITemplates.CREATE_PAD)
-                .param("name", name)
+                .param("name", name.toString())
                 .with(csrf()))
         
             .andExpect(model().hasNoErrors())
@@ -74,7 +74,7 @@ public class CreatePadControllerTest {
         mockMvcProvider.getMockMvc().perform(post(URITemplates.CREATE_PAD)
                 .with(csrf()))
         
-            .andExpect(model().attributeHasFieldErrors("pad", "name"))
+            .andExpect(model().attributeHasFieldErrors("createPad", "name"))
             .andExpect(view().name("pad/create"));
         
         assertThat(repository.findAll(), empty());

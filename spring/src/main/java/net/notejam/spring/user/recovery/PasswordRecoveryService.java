@@ -1,6 +1,7 @@
-package net.notejam.spring.user.forgot;
+package net.notejam.spring.user.recovery;
 
 import java.math.BigInteger;
+import java.net.URI;
 import java.time.Instant;
 import java.time.Period;
 import java.util.HashMap;
@@ -135,15 +136,15 @@ public class PasswordRecoveryService {
      * If the email doesn't belong to a user the process stops silently.
      *
      * @param email
-     *            The email
-     * @param uriBuilder
-     *            A prepared uri builder with the fully qualified host name.
+     *            The email address
+     * @param baseUri
+     *            base URI. It is used for building links in emails.
      * @param locale
      *            The locale in which the process should happen
      */
     @Async("mailExecutor")
     @Transactional
-    public void startRecoveryProcess(final String email, final UriComponentsBuilder uriBuilder, final Locale locale) {
+    public void startRecoveryProcess(final String email, final URI baseUri, final Locale locale) {
         Optional<User> user = userRepository.findOneByEmail(email);
 
         if (!user.isPresent()) {
@@ -157,7 +158,7 @@ public class PasswordRecoveryService {
         token.setExpiration(determineExpiration());
         tokenRepository.save(token);
 
-        sendRecoveryMail(token, uriBuilder, locale);
+        sendRecoveryMail(token, baseUri, locale);
     }
 
     /**
@@ -165,12 +166,12 @@ public class PasswordRecoveryService {
      *
      * @param token
      *            The recovery token
-     * @param uriBuilder
-     *            A prepared uri builder with the fully qualified host name.
+     * @param baseUri
+     *            base URI. It is used for building links in emails.
      * @param locale
      *            The process locale
      */
-    private void sendRecoveryMail(final RecoveryToken token, final UriComponentsBuilder uriBuilder,
+    private void sendRecoveryMail(final RecoveryToken token, final URI baseUri,
             final Locale locale) {
         if (mailSender == null) {
             LOGGER.warn("Mail transport is not available. Consider setting spring.mail.host in application.properties");
@@ -182,7 +183,7 @@ public class PasswordRecoveryService {
         message.setSubject(messageSource.getMessage("forgot.mail.subject", null, locale));
         message.setTo(token.getUser().getEmail());
 
-        String uri = buildRecoveryURI(token, uriBuilder);
+        String uri = buildRecoveryURI(token, baseUri);
         message.setText(messageSource.getMessage("forgot.mail.message", new String[] { uri }, locale));
 
         mailSender.send(message);
@@ -193,11 +194,13 @@ public class PasswordRecoveryService {
      *
      * @param token
      *            The recovery token
-     * @param uriBuilder
-     *            A prepared uri builder with the fully qualified host name.
+     * @param baseUri
+     *            base URI. It is used for building links in emails.
      * @return The URI to recover the password
      */
-    private static String buildRecoveryURI(final RecoveryToken token, final UriComponentsBuilder uriBuilder) {
+    private static String buildRecoveryURI(final RecoveryToken token, final URI baseUri) {
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(baseUri);
+        
         Map<String, String> uriVariables = new HashMap<>();
         uriVariables.put("id", token.getId().toString());
         uriVariables.put("token", token.getToken());

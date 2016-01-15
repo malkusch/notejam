@@ -5,8 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -33,32 +32,32 @@ public class AccountController {
     /**
      * Shows the form.
      *
-     * @param account
-     *            The account settings.
-     * @return The view.
+     * @param changePassword
+     *            command for the view model
+     * @return view name
      */
     @RequestMapping(method = RequestMethod.GET)
-    public String showForm(@ModelAttribute("account") final Account account) {
+    public String showForm(final ChangePassword changePassword) {
         return "user/account";
     }
 
     /**
      * Changes the password.
      *
-     * @param account
-     *            The account settings.
-     * @param bindingResult
-     *            The validation result
-     * @return The view.
+     * @param changePassword
+     *            command from the view
+     * @param errors
+     *            form validation errors
+     * @return view name
      */
     @RequestMapping(method = RequestMethod.POST)
-    public String changePassword(@Valid @ModelAttribute("account") final Account account,
-            final BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "user/account";
+    public String changePassword(@Valid final ChangePassword changePassword, final Errors errors) {
+
+        if (errors.hasErrors()) {
+            return showForm(changePassword);
         }
 
-        userService.changePassword(account.getNewPassword());
+        userService.changePassword(changePassword.getNewPassword());
 
         return String.format("redirect:%s?success", URITemplates.SETTINGS);
     }

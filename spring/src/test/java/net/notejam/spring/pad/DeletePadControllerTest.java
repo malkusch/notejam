@@ -59,9 +59,7 @@ public class DeletePadControllerTest {
     private String uri;
     
     private void setPad() {
-        pad = padService.buildPad();
-        pad.setName("name");
-        padService.savePad(pad);
+        pad = padService.createPad(new Name("name"));
     }
     
     @Before

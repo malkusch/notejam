@@ -96,7 +96,7 @@ public class NoteService {
         note.setUser(userService.getAuthenticatedUser());
 
         if (padId != null) {
-            note.setPad(padService.getPad(padId).get());
+            note.setPad(padService.getPad(padId));
         }
 
         return note;

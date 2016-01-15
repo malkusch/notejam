@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import net.notejam.spring.URITemplates;
 import net.notejam.spring.note.controller.EditNoteController;
+import net.notejam.spring.pad.Name;
 import net.notejam.spring.pad.Pad;
 import net.notejam.spring.pad.PadService;
 import net.notejam.spring.test.IntegrationTest;
@@ -65,7 +66,7 @@ public class EditNoteControllerTest {
     /**
      * The provided note name.
      */
-    private final String NAME = "name";
+    private final Name NAME = new Name("name");
     
     /**
      * The edit note uri.
@@ -97,6 +98,7 @@ public class EditNoteControllerTest {
         mockMvcProvider.getMockMvc().perform(post(uri)
                 .param("name", name)
                 .param("text", text)
+                .param("padId", "")
                 .with(csrf()))
         
             .andExpect(model().hasNoErrors())
@@ -104,7 +106,7 @@ public class EditNoteControllerTest {
                 int id = Integer.parseInt(getPathVariable("id", URITemplates.VIEW_NOTE, result.getResponse().getRedirectedUrl())); 
                 Note note = repository.findOne(id);
 
-                assertEquals(name, note.getName());
+                assertEquals(new Name(name), note.getName());
                 assertEquals(text, note.getText());
             });
     }
@@ -117,9 +119,10 @@ public class EditNoteControllerTest {
         mockMvcProvider.getMockMvc().perform(post(uri)
                 .param("name", "name2")
                 .param("text", "")
+                .param("padId", "")
                 .with(csrf()))
         
-            .andExpect(model().attributeHasFieldErrors("note", "text"))
+            .andExpect(model().attributeHasFieldErrors("noteCommand", "text"))
             .andExpect(view().name("note/edit"));
     }
 
@@ -134,6 +137,7 @@ public class EditNoteControllerTest {
         mockMvcProvider.getMockMvc().perform(post(uri)
                 .param("name", "name2")
                 .param("text", "text2")
+                .param("padId", "")
                 .with(csrf())
                 .with(user(otherUser)))
         
@@ -150,9 +154,7 @@ public class EditNoteControllerTest {
         final String otherUser = "another@example.net";
         userService.signUp(otherUser, "password");
         
-        final Pad pad = padService.buildPad();
-        pad.setName("name");
-        padService.savePad(pad);
+        final Pad pad = padService.createPad(new Name("name"));
         
         mockMvcProvider.getMockMvc().perform(post(uri)
                 .param("name", "name")

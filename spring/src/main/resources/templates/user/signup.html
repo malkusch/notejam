@@ -10,12 +10,12 @@
 
 	<div th:fragment="content">
 		<form class="offset-by-six sign-in" th:action="@{#}" action="#"
-			th:object="${user}" method="post">
+			th:object="${signupUser}" method="post">
 			<label th:inline="text"> [[#{signup.Email}]] <input
-				type="email" th:field="*{email}" th:errorclass="red" />
+				type="email" th:field="*{emailAddress}" th:errorclass="red" />
 			</label>
-			<ul class="errorlist" th:if="${#fields.hasErrors('email')}">
-				<li th:each="err : ${#fields.errors('email')}" th:text="${err}" />
+			<ul class="errorlist" th:if="${#fields.hasErrors('emailAddress')}">
+				<li th:each="err : ${#fields.errors('emailAddress')}" th:text="${err}" />
 			</ul>
 
 			<label th:inline="text"> [[#{signup.Password}]] <input

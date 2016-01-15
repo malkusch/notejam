@@ -1,11 +1,10 @@
-package net.notejam.spring.user.signup;
+package net.notejam.spring.user.controller;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -31,31 +30,32 @@ public class SignupController {
     /**
      * Shows the sign up form.
      *
-     * @param user
-     *            The model attribute "user".
-     * @return The view.
+     * @param signupUser
+     *            command for the view model
+     * @return view name
      */
     @RequestMapping(method = RequestMethod.GET)
-    public String showForm(@ModelAttribute("user") final Signup user) {
+    public String showForm(final SignupUser signupUser) {
         return "user/signup";
     }
 
     /**
      * Signs up a user.
      *
-     * @param user
-     *            The new user.
-     * @param bindingResult
-     *            The validation result.
-     * @return The view
+     * @param signupUser
+     *            command from the view
+     * @param errors
+     *            result of the form validation
+     * @return view name
      */
     @RequestMapping(method = RequestMethod.POST)
-    public String signup(@Valid @ModelAttribute("user") final Signup user, final BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "user/signup";
+    public String signup(@Valid final SignupUser signupUser, final Errors errors) {
+
+        if (errors.hasErrors()) {
+            return showForm(signupUser);
         }
 
-        userService.signUp(user.getEmail(), user.getPassword());
+        userService.signUp(signupUser.getEmailAddress(), signupUser.getPassword());
 
         return String.format("redirect:%s?signup", URITemplates.SIGNIN);
     }

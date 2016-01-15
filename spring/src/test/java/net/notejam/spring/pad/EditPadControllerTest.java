@@ -59,7 +59,7 @@ public class EditPadControllerTest {
     /**
      * The provided pad name.
      */
-    private final String NAME = "name";
+    private final Name NAME = new Name("name");
     
     /**
      * The edit note uri.
@@ -67,9 +67,7 @@ public class EditPadControllerTest {
     private String uri;
     
     private void setPad() {
-        pad = padService.buildPad();
-        pad.setName("name");
-        padService.savePad(pad);
+        pad = padService.createPad(new Name("name"));
     }
     
     @Before
@@ -84,10 +82,10 @@ public class EditPadControllerTest {
      */
     @Test
     public void padCanBeEdited() throws Exception {
-        final String name = "name2";
+        final Name name = new Name("name2");
         
         mockMvcProvider.getMockMvc().perform(post(uri)
-                .param("name", name)
+                .param("name", name.toString())
                 .with(csrf()))
         
             .andExpect(model().hasNoErrors())
@@ -108,7 +106,7 @@ public class EditPadControllerTest {
                 .param("name", "")
                 .with(csrf()))
         
-            .andExpect(model().attributeHasFieldErrors("pad", "name"))
+            .andExpect(model().attributeHasFieldErrors("editPad", "name"))
             .andExpect(view().name("pad/edit"));
     }
     

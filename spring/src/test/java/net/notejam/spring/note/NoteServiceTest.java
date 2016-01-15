@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import net.notejam.spring.pad.Name;
 import net.notejam.spring.pad.Pad;
 import net.notejam.spring.pad.PadService;
 import net.notejam.spring.test.IntegrationTest;
@@ -54,7 +55,7 @@ public class NoteServiceTest {
     @Test
     public void testSaveNoteWithoutPad() {
         Note note = service.buildNote(null);
-        note.setName("name");
+        note.setName(new Name("name"));
         note.setText("text");
 
         service.saveNote(note, null);
@@ -67,12 +68,10 @@ public class NoteServiceTest {
      */
     @Test
     public void testSaveNoteWithPad() {
-        Pad pad = padService.buildPad();
-        pad.setName("test");
-        padService.savePad(pad);
+        Pad pad = padService.createPad(new Name("name"));
 
         Note note = service.buildNote(pad.getId());
-        note.setName("name");
+        note.setName(new Name("name"));
         note.setText("text");
 
         service.saveNote(note, pad);
@@ -86,7 +85,7 @@ public class NoteServiceTest {
     @Test
     public void testDeleteNote() {
         Note note = service.buildNote(null);
-        note.setName("name");
+        note.setName(new Name("name"));
         note.setText("text");
 
         service.saveNote(note, null);

@@ -1,6 +1,5 @@
 package net.notejam.spring.pad;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +8,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.notejam.spring.error.ResourceNotFoundException;
 import net.notejam.spring.note.NoteService;
 import net.notejam.spring.security.owner.PermitOwner;
 import net.notejam.spring.user.User;
@@ -57,50 +57,52 @@ public class PadService {
      *
      * @param id
      *            The pad id
-     * @return The pad
+     * @return The pad, not null
+     * @throws ResourceNotFoundException
+     *             If the the pad was not found.
      */
     @PermitOwner
-    public Optional<Pad> getPad(final int id) {
-        return Optional.ofNullable(padRepository.findOne(id));
+    public Pad getPad(final int id) {
+        return Optional.ofNullable(padRepository.findOne(id)).orElseThrow(() -> new ResourceNotFoundException());
     }
 
     /**
      * Deletes a pad and its notes.
      *
      * @param pad
-     *            The pad
+     *            pad id
      */
     @Transactional
-    public void deletePad(@PermitOwner final Pad pad) {
+    public void deletePad(int id) {
+        Pad pad = getPad(id);
         noteService.deleteNotes(pad);
         padRepository.delete(pad);
     }
 
     /**
-     * Builds a new pad with an empty name.
+     * Edits a pad.
      *
-     * The pad is not save yet. Use {@link #savePad(Pad)} to save it.
-     *
-     * @return The new pad
+     * @param pad
+     *            pad
+     * @param name
+     *            new pad name
      */
-    public Pad buildPad() {
-        Pad pad = new Pad();
-        pad.setCreated(Instant.now());
-        pad.setUser(userService.getAuthenticatedUser());
-        return pad;
+    @Transactional
+    public void editPad(final Pad pad, final Name name) {
+        pad.edit(name);
     }
 
     /**
-     * Safes a pad.
+     * Creates a new pad.
      *
-     * The pad should be created with {@link #buildPad()}.
-     *
-     * @param pad
-     *            The unsaved pad.
+     * @param createPad
+     *            command for creating the pad
      */
     @Transactional
-    public void savePad(@PermitOwner final Pad pad) {
+    public Pad createPad(final Name name) {
+        Pad pad = new Pad(name, userService.getAuthenticatedUser());
         padRepository.save(pad);
+        return pad;
     }
 
 }

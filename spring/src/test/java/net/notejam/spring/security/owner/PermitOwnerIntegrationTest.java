@@ -1,17 +1,21 @@
 package net.notejam.spring.security.owner;
 
+import static org.mockito.Mockito.when;
+
 import java.util.Optional;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import net.notejam.spring.pad.Pad;
 import net.notejam.spring.test.IntegrationTest;
 import net.notejam.spring.user.SignedUpUserProvider;
 import net.notejam.spring.user.User;
@@ -31,15 +35,22 @@ public class PermitOwnerIntegrationTest {
     @Autowired
     public SignedUpUserProvider userProvider;
 
+    @Mock
+    private Owned owned;
+    
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+    }
+    
     /**
      * Returning an owned object should be permitted.
      */
     @Test
     public void testPermitReturnOwned() {
-        Pad pad = new Pad();
-        pad.setUser(userProvider.getUser());
+        when(owned.getUser()).thenReturn(userProvider.getUser());
 
-        returnOwned(pad);
+        returnOwned(owned);
     }
 
     /**
@@ -47,10 +58,9 @@ public class PermitOwnerIntegrationTest {
      */
     @Test
     public void testPermitSendOwned() {
-        Pad pad = new Pad();
-        pad.setUser(userProvider.getUser());
+        when(owned.getUser()).thenReturn(userProvider.getUser());
 
-        sendOwned(pad);
+        sendOwned(owned);
     }
 
     /**
@@ -58,10 +68,9 @@ public class PermitOwnerIntegrationTest {
      */
     @Test
     public void testPermitReturnOwnedOptional() {
-        Pad pad = new Pad();
-        pad.setUser(userProvider.getUser());
+        when(owned.getUser()).thenReturn(userProvider.getUser());
 
-        returnOwned(Optional.of(pad));
+        returnOwned(Optional.of(owned));
     }
 
     /**
@@ -70,10 +79,9 @@ public class PermitOwnerIntegrationTest {
     @Test
     @Ignore
     public void testPermitSendOwnedOptional() {
-        Pad pad = new Pad();
-        pad.setUser(userProvider.getUser());
+        when(owned.getUser()).thenReturn(userProvider.getUser());
 
-        sendOwned(Optional.of(pad));
+        sendOwned(Optional.of(owned));
     }
 
     /**
@@ -114,10 +122,9 @@ public class PermitOwnerIntegrationTest {
      */
     @Test(expected = AccessDeniedException.class)
     public void testPermitReturnNotOwned() {
-        Pad pad = new Pad();
-        pad.setUser(new User());
+        when(owned.getUser()).thenReturn(new User());
 
-        returnOwned(pad);
+        returnOwned(owned);
     }
 
     /**
@@ -125,10 +132,9 @@ public class PermitOwnerIntegrationTest {
      */
     @Test(expected = AccessDeniedException.class)
     public void testPermitSendNotOwned() {
-        Pad pad = new Pad();
-        pad.setUser(new User());
+        when(owned.getUser()).thenReturn(new User());
 
-        sendOwned(pad);
+        sendOwned(owned);
     }
 
     /**
@@ -136,10 +142,9 @@ public class PermitOwnerIntegrationTest {
      */
     @Test(expected = AccessDeniedException.class)
     public void testPermitReturnOptionalNotOwned() {
-        Pad pad = new Pad();
-        pad.setUser(new User());
-
-        returnOwned(Optional.of(pad));
+        when(owned.getUser()).thenReturn(new User());
+        
+        returnOwned(Optional.of(owned));
     }
 
     /**
@@ -148,10 +153,9 @@ public class PermitOwnerIntegrationTest {
     @Test(expected = AccessDeniedException.class)
     @Ignore
     public void testPermitSendOptionalNotOwned() {
-        Pad pad = new Pad();
-        pad.setUser(new User());
+        when(owned.getUser()).thenReturn(new User());
 
-        sendOwned(Optional.of(pad));
+        sendOwned(Optional.of(owned));
     }
 
     /**

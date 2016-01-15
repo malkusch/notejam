@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import net.notejam.spring.URITemplates;
 import net.notejam.spring.note.controller.CreateNoteController;
+import net.notejam.spring.pad.Name;
 import net.notejam.spring.pad.Pad;
 import net.notejam.spring.pad.PadService;
 import net.notejam.spring.test.IntegrationTest;
@@ -69,6 +70,7 @@ public class CreateNoteControllerTest {
         mockMvcProvider.getMockMvc().perform(post(URITemplates.CREATE_NOTE)
                 .param("name", name)
                 .param("text", text)
+                .param("padId", "")
                 .with(csrf()))
         
             .andExpect(model().hasNoErrors())
@@ -76,7 +78,7 @@ public class CreateNoteControllerTest {
                 int id = Integer.parseInt(getPathVariable("id", URITemplates.VIEW_NOTE, result.getResponse().getRedirectedUrl())); 
                 Note note = repository.findOne(id);
 
-                assertEquals(name, note.getName());
+                assertEquals(new Name(name), note.getName());
                 assertEquals(text, note.getText());
                 assertEquals(SignedUpUserProvider.EMAIL, note.getUser().getEmail());
                 assertNull(note.getPad());
@@ -91,6 +93,7 @@ public class CreateNoteControllerTest {
         mockMvcProvider.getMockMvc().perform(post(URITemplates.CREATE_NOTE)
                 .param("name", "name")
                 .param("text", "text")
+                .param("padId", "")
                 .with(csrf()))
         
             .andExpect(redirectToAuthentication());
@@ -108,7 +111,7 @@ public class CreateNoteControllerTest {
                 .param("text", "text")
                 .with(csrf()))
         
-            .andExpect(model().attributeHasFieldErrors("note", "name"))
+            .andExpect(model().attributeHasFieldErrors("noteCommand", "name"))
             .andExpect(view().name("note/create"));
         
         assertThat(repository.findAll(), empty());
@@ -123,14 +126,12 @@ public class CreateNoteControllerTest {
         final String otherUser = "another@example.net";
         userService.signUp(otherUser, "password");
         
-        final Pad pad = padService.buildPad();
-        pad.setName("name");
-        padService.savePad(pad);
+        final Pad pad = padService.createPad(new Name("name"));
         
         mockMvcProvider.getMockMvc().perform(post(URITemplates.CREATE_NOTE)
                 .param("name", "name")
                 .param("text", "text")
-                .param("pad", pad.getId().toString())
+                .param("padId", pad.getId().toString())
                 .with(csrf())
                 .with(user(otherUser)))
         

@@ -7,9 +7,7 @@ import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import net.notejam.spring.security.owner.Owned;
@@ -22,7 +20,7 @@ import net.notejam.spring.user.User;
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
  */
 @Entity
-@Table(indexes = @Index(columnList = "created"))
+@Table(indexes = @Index(columnList = "created") )
 public final class Pad extends AbstractPersistable<Integer>implements Owned {
 
     private static final long serialVersionUID = -1186217744141902841L;
@@ -36,9 +34,8 @@ public final class Pad extends AbstractPersistable<Integer>implements Owned {
     /**
      * The name.
      */
-    @Size(max = 100)
-    @NotEmpty
-    private String name;
+    @NotNull
+    private Name name;
 
     /**
      * The owner.
@@ -46,6 +43,27 @@ public final class Pad extends AbstractPersistable<Integer>implements Owned {
     @ManyToOne
     @NotNull
     private User user;
+
+    /**
+     * Builds a new pad.
+     *
+     * @param name
+     *            name of this pad. Null is not allowed.
+     * @param user
+     *            user who owns this pad. Null is not allowed.
+     */
+    Pad(final Name name, final User user) {
+        if (name == null) {
+            throw new NullPointerException();
+        }
+        if (user == null) {
+            throw new NullPointerException();
+        }
+        
+        this.created = Instant.now();
+        this.user = user;
+        this.name = name;
+    }
 
     /**
      * Returns time of creation.
@@ -57,44 +75,37 @@ public final class Pad extends AbstractPersistable<Integer>implements Owned {
     }
 
     /**
-     * Sets the time of creation.
-     *
-     * @param created The time of creation.
-     */
-    public void setCreated(final Instant created) {
-        this.created = created;
-    }
-
-    /**
      * Returns the name.
      *
      * @return The name.
      */
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
     /**
-     * Sets the name.
+     * Edits the pad
      *
-     * @param name The name.
+     * @param name
+     *            edited name. Null is not allowed.
      */
-    public void setName(final String name) {
+    public void edit(final Name name) {
+        if (name == null) {
+            throw new NullPointerException();
+        }
         this.name = name;
-    }
-
-    /**
-     * Sets the owner.
-     *
-     * @param user The owner.
-     */
-    public void setUser(final User user) {
-        this.user = user;
     }
 
     @Override
     public User getUser() {
         return user;
+    }
+    
+    /**
+     * Builds an incomplete pad for the persistence framework.
+     */
+    Pad() {
+        // The persistence framework needs a default constructor.
     }
 
 }

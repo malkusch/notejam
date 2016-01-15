@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import net.notejam.spring.URITemplates;
-import net.notejam.spring.error.ResourceNotFoundException;
 import net.notejam.spring.pad.Pad;
 import net.notejam.spring.pad.PadService;
 import net.notejam.spring.pad.controller.PadsAdvice.Pads;
@@ -33,21 +32,21 @@ public class DeletePadController {
     private PadService service;
 
     /**
-     * Provides the model attribute "pad".
+     * Provides the view model attribute "pad".
      *
      * @param id
-     *            The pad id.
-     * @return The model attribute "pad".
+     *            pad id
+     * @return pad to delete
      */
     @ModelAttribute
     public Pad pad(@PathVariable("id") final int id) {
-        return service.getPad(id).orElseThrow(() -> new ResourceNotFoundException());
+        return service.getPad(id);
     }
 
     /**
      * Shows the confirmation for deleting a pad.
      *
-     * @return The view
+     * @return view name
      */
     @RequestMapping(method = RequestMethod.GET)
     public String confirmDeletePad() {
@@ -57,13 +56,13 @@ public class DeletePadController {
     /**
      * Deletes a pad and its notes.
      *
-     * @param pad
-     *            The pad.
-     * @return The view
+     * @param id
+     *            pad id
+     * @return view name
      */
     @RequestMapping(method = RequestMethod.POST)
-    public String deletePad(final Pad pad) {
-        service.deletePad(pad);
+    public String deletePad(@PathVariable("id") final int id) {
+        service.deletePad(id);
         return String.format("redirect:%s?deleted", URITemplates.CREATE_PAD);
     }
 

@@ -1,4 +1,4 @@
-package net.notejam.spring.user.forgot;
+package net.notejam.spring.user.recovery;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

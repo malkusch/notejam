@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import net.notejam.spring.URITemplates;
 import net.notejam.spring.note.controller.DeleteNoteController;
+import net.notejam.spring.pad.Name;
 import net.notejam.spring.test.IntegrationTest;
 import net.notejam.spring.test.MockMvcProvider;
 import net.notejam.spring.user.SignedUpUserProvider;
@@ -61,7 +62,7 @@ public class DeleteNoteControllerTest {
     @Before
     public void setNote() {
         note = service.buildNote(null);
-        note.setName("name");
+        note.setName(new Name("name"));
         note.setText("text");
         service.saveNote(note, null);
     }

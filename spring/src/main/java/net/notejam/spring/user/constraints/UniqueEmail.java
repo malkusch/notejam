@@ -1,6 +1,7 @@
-package net.notejam.spring.user.signup.constraints;
+package net.notejam.spring.user.constraints;
 
 import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
@@ -22,7 +23,7 @@ import javax.validation.groups.Default;
  * @author markus@malkusch.de
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
  */
-@Target(FIELD)
+@Target({ FIELD, METHOD })
 @Retention(RUNTIME)
 @Constraint(validatedBy = UniqueEmailValidator.class)
 @Documented
@@ -36,11 +37,11 @@ public @interface UniqueEmail {
     /**
      * The validation groups.
      */
-    Class<?>[]groups() default {};
+    Class<?>[] groups() default {};
 
     /**
      * This constraint doesn't support any payload.
      */
-    Class<? extends Payload>[]payload() default {};
+    Class<? extends Payload>[] payload() default {};
 
 }

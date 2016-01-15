@@ -9,11 +9,11 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
+import net.notejam.spring.pad.Name;
 import net.notejam.spring.pad.Pad;
 import net.notejam.spring.security.owner.Owned;
 import net.notejam.spring.user.User;
@@ -52,9 +52,8 @@ public final class Note extends AbstractPersistable<Integer>implements Owned {
     /**
      * The name.
      */
-    @NotEmpty
-    @Size(max = 100)
-    private String name;
+    @NotNull
+    private Name name;
 
     /**
      * The text.
@@ -69,7 +68,7 @@ public final class Note extends AbstractPersistable<Integer>implements Owned {
      *
      * @return The name.
      */
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
@@ -78,7 +77,7 @@ public final class Note extends AbstractPersistable<Integer>implements Owned {
      *
      * @param name The name.
      */
-    public void setName(final String name) {
+    public void setName(final Name name) {
         this.name = name;
     }
 

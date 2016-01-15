@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import net.notejam.spring.URITemplates;
-import net.notejam.spring.error.ResourceNotFoundException;
 import net.notejam.spring.note.Note;
 import net.notejam.spring.note.NoteService;
 import net.notejam.spring.pad.Pad;
@@ -50,7 +49,7 @@ public class ViewPadNotesController {
      */
     @ModelAttribute
     public Pad pad(@PathVariable("id") final int id) {
-        return padService.getPad(id).orElseThrow(() -> new ResourceNotFoundException());
+        return padService.getPad(id);
     }
 
     /**

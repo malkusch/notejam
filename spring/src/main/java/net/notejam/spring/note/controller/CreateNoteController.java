@@ -1,12 +1,13 @@
 package net.notejam.spring.note.controller;
 
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import net.notejam.spring.URITemplates;
 import net.notejam.spring.note.Note;
 import net.notejam.spring.note.NoteService;
+import net.notejam.spring.pad.Name;
 import net.notejam.spring.pad.controller.PadsAdvice.Pads;
 
 /**
@@ -36,46 +38,48 @@ public class CreateNoteController {
     private NoteService service;
 
     /**
-     * Provides the model attribute "note".
-     *
-     * @param padId
-     *            The preselected pad id.
-     * @return The model attribute "note".
-     */
-    @ModelAttribute
-    public Note note(@RequestParam(value = "pad", required = false) final Integer padId) {
-        return service.buildNote(padId);
-    }
-
-    /**
      * Shows the form for creating a note.
+     *
+     * @param createNote
+     *            note command
+     * @param padId
+     *            preselected pad id
      *
      * @return The view
      */
     @RequestMapping(method = RequestMethod.GET)
-    public String showCreateNoteForm() {
-        return "note/create";
+    public String showCreateNoteForm(final NoteCommand createNote,
+	    @RequestParam(value = "pad", required = false) final Optional<Integer> padId) {
+
+	createNote.setPadId(padId);
+
+	return "note/create";
     }
 
     /**
      * Creates a new note.
      *
-     * @param note
-     *            The model attribute "note".
-     * @param bindingResult
+     *
+     * @param createNote
+     *            note command
+     * @param errors
      *            The validation result.
      *
      * @return The view
      */
     @RequestMapping(method = RequestMethod.POST)
-    public String createNote(@Valid final Note note, final BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "note/create";
-        }
+    public String createNote(final @Valid NoteCommand createNote, final Errors errors) {
 
-        service.saveNote(note, note.getPad());
+	if (errors.hasErrors()) {
+	    return showCreateNoteForm(createNote, createNote.getPadId());
+	}
 
-        return String.format("redirect:%s", buildCreatedNoteUri(note.getId()));
+	Note note = service.buildNote(createNote.getPadId().orElse(null));
+	note.setName(new Name(createNote.getName()));
+	note.setText(createNote.getText());
+	service.saveNote(note, note.getPad());
+
+	return String.format("redirect:%s", buildCreatedNoteUri(note.getId()));
     }
 
     /**
@@ -86,9 +90,9 @@ public class CreateNoteController {
      * @return The URI
      */
     private static String buildCreatedNoteUri(final int id) {
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(URITemplates.VIEW_NOTE);
-        uriBuilder.queryParam("successful");
-        return uriBuilder.buildAndExpand(id).toUriString();
+	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(URITemplates.VIEW_NOTE);
+	uriBuilder.queryParam("successful");
+	return uriBuilder.buildAndExpand(id).toUriString();
     }
 
 }

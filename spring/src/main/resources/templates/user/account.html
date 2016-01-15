@@ -10,7 +10,7 @@
 
 	<div th:fragment="content">
 		<form class="offset-by-six sign-in" th:action="@{#}"
-			th:object="${account}" method="post">
+			th:object="${changePassword}" method="post">
 
 			<div class="alert-area">
 				<div th:if="${param.success}" class="alert alert-success"

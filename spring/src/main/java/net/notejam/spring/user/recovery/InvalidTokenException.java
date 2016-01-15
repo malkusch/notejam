@@ -1,4 +1,4 @@
-package net.notejam.spring.user.forgot;
+package net.notejam.spring.user.recovery;
 
 /**
  * The token was not valid.

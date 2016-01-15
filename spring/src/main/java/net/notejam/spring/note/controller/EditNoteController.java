@@ -1,11 +1,13 @@
 package net.notejam.spring.note.controller;
 
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +18,9 @@ import net.notejam.spring.URITemplates;
 import net.notejam.spring.error.ResourceNotFoundException;
 import net.notejam.spring.note.Note;
 import net.notejam.spring.note.NoteService;
+import net.notejam.spring.pad.Name;
+import net.notejam.spring.pad.Pad;
+import net.notejam.spring.pad.PadService;
 import net.notejam.spring.pad.controller.PadsAdvice.Pads;
 
 /**
@@ -37,45 +42,80 @@ public class EditNoteController {
     private NoteService service;
 
     /**
-     * Provides the model attribute "note".
+     * The pad service.
+     */
+    @Autowired
+    private PadService padService;
+
+    /**
+     * Provides the model attribute "name".
      *
-     * @param id
-     *            The note id.
-     * @return The model attribute "note".
+     * @param note
+     *            The currently edited note
+     * @return note name
      */
     @ModelAttribute
-    public Note note(@PathVariable("id") final int id) {
-        return service.getNote(id).orElseThrow(() -> new ResourceNotFoundException());
+    public Name name(@PathVariable("id") final Note note) {
+	return note.getName();
     }
 
     /**
      * Shows the form for editing a note.
      *
+     * @param note
+     *            currently edited note
+     * @param editNote
+     *            note command
+     *
      * @return The view
      */
     @RequestMapping(method = RequestMethod.GET)
-    public String showEditNoteForm() {
-        return "note/edit";
+    public String showEditNoteForm(@PathVariable("id") final Note note, final NoteCommand editNote) {
+
+	editNote.setName(note.getName().toString());
+	editNote.setText(note.getText());
+
+	if (note.getPad() != null) {
+	    editNote.setPadId(Optional.of(note.getPad().getId()));
+	} else {
+	    editNote.setPadId(Optional.empty());
+	}
+
+	return "note/edit";
     }
 
     /**
      * Edits a new note.
      *
-     * @param note
-     *            The note.
-     * @param bindingResult
-     *            The validation result.
+     * @param id
+     *            id of the currently edited note
+     * @param editNote
+     *            note command
+     * @param errors
+     *            validation errors
+     * 
      * @return The view
      */
     @RequestMapping(method = RequestMethod.POST)
-    public String editNote(@Valid final Note note, final BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "note/edit";
-        }
+    public String editNote(@PathVariable("id") final int id, @Valid final NoteCommand editNote, final Errors errors) {
 
-        service.saveNote(note, note.getPad());
+	if (errors.hasErrors()) {
+	    return "note/edit";
+	}
 
-        return String.format("redirect:%s", buildEditedNoteUri(note.getId()));
+	Note note = service.getNote(id).orElseThrow(() -> new ResourceNotFoundException());
+
+	note.setName(new Name(editNote.getName()));
+	note.setText(editNote.getText());
+
+	Pad pad = null;
+	if (editNote.getPadId().isPresent()) {
+	    pad = padService.getPad(editNote.getPadId().get());
+	}
+
+	service.saveNote(note, pad);
+
+	return String.format("redirect:%s", buildEditedNoteUri(note.getId()));
     }
 
     /**
@@ -86,9 +126,9 @@ public class EditNoteController {
      * @return The URI
      */
     private static String buildEditedNoteUri(final int id) {
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(URITemplates.VIEW_NOTE);
-        uriBuilder.queryParam("successful");
-        return uriBuilder.buildAndExpand(id).toUriString();
+	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(URITemplates.VIEW_NOTE);
+	uriBuilder.queryParam("successful");
+	return uriBuilder.buildAndExpand(id).toUriString();
     }
 
 }

@@ -1,4 +1,4 @@
-package net.notejam.spring.user.signup;
+package net.notejam.spring.user.controller;
 
 import static org.junit.Assert.assertFalse;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -51,7 +51,7 @@ public class SignupControllerTest {
         final String password = "EHKBHHKe";
         
         mockMvcProvider.getMockMvc().perform(post(URITemplates.SIGNUP)
-                .param("email", email)
+                .param("emailAddress", email)
                 .param("password", password)
                 .param("repeatedPassword", password)
                 .with(csrf()))
@@ -73,11 +73,11 @@ public class SignupControllerTest {
         final String password = "EHKBHHKe";
         
         mockMvcProvider.getMockMvc().perform(post(URITemplates.SIGNUP)
-                .param("email", email)
+                .param("emailAddress", email)
                 .param("password", password)
                 .with(csrf()))
         
-            .andExpect(model().attributeHasFieldErrors("user", "repeatedPassword"))
+            .andExpect(model().attributeHasFieldErrors("signupUser", "repeatedPassword"))
             .andExpect(view().name("user/signup"));
 
         assertFalse(userService.isEmailRegistered(email));
@@ -92,12 +92,12 @@ public class SignupControllerTest {
         final String password = "EHKBHHKe";
         
         mockMvcProvider.getMockMvc().perform(post(URITemplates.SIGNUP)
-                .param("email", email)
+                .param("emailAddress", email)
                 .param("password", password)
                 .param("repeatedPassword", password)
                 .with(csrf()))
         
-            .andExpect(model().attributeHasFieldErrors("user", "email"))
+            .andExpect(model().attributeHasFieldErrors("signupUser", "emailAddress"))
             .andExpect(view().name("user/signup"));
         
         assertFalse(userService.isEmailRegistered(email));
@@ -114,12 +114,12 @@ public class SignupControllerTest {
         userService.signUp(email, "QiXUzGS");
         
         mockMvcProvider.getMockMvc().perform(post(URITemplates.SIGNUP)
-                .param("email", email)
+                .param("emailAddress", email)
                 .param("password", password)
                 .param("repeatedPassword", password)
                 .with(csrf()))
         
-            .andExpect(model().attributeHasFieldErrors("user", "email"))
+            .andExpect(model().attributeHasFieldErrors("signupUser", "emailAddress"))
             .andExpect(view().name("user/signup"));
     }
     
@@ -131,12 +131,12 @@ public class SignupControllerTest {
         final String email    = "test@example.net";
         
         mockMvcProvider.getMockMvc().perform(post(URITemplates.SIGNUP)
-                .param("email", email)
+                .param("emailAddress", email)
                 .param("password", "EHKBHHKe")
                 .param("repeatedPassword", "QiXUzGS")
                 .with(csrf()))
         
-            .andExpect(model().attributeHasFieldErrors("user", "password"))
+            .andExpect(model().attributeHasFieldErrors("signupUser", "password"))
             .andExpect(view().name("user/signup"));
         
         assertFalse(userService.isEmailRegistered(email));

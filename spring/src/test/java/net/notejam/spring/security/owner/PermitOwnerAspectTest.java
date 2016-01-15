@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.access.AccessDeniedException;
 
-import net.notejam.spring.pad.Pad;
 import net.notejam.spring.user.User;
 import net.notejam.spring.user.UserService;
 
@@ -27,6 +26,9 @@ public class PermitOwnerAspectTest {
     @Mock
     private UserService userService;
 
+    @Mock
+    private Owned owned;
+    
     /**
      * The SUT
      */
@@ -52,9 +54,7 @@ public class PermitOwnerAspectTest {
      */
     @Test(expected = AccessDeniedException.class)
     public void testAuthorizeReturnDeniesAnonymous() {
-        Pad owned = new Pad();
-        owned.setUser(new User());
-
+        when(owned.getUser()).thenReturn(new User());
         when(userService.getAuthenticatedUser()).thenReturn(null);
 
         aspect.authorizeReturn(owned);
@@ -65,9 +65,7 @@ public class PermitOwnerAspectTest {
      */
     @Test(expected = AccessDeniedException.class)
     public void testAuthorizeReturnDeniesOtherUser() {
-        Pad owned = new Pad();
-        owned.setUser(new User());
-
+        when(owned.getUser()).thenReturn(new User());
         when(userService.getAuthenticatedUser()).thenReturn(new User());
 
         aspect.authorizeReturn(owned);
@@ -79,10 +77,7 @@ public class PermitOwnerAspectTest {
     @Test
     public void testAuthorizeReturnPermitsOwner() {
         User owner = new User();
-
-        Pad owned = new Pad();
-        owned.setUser(owner);
-
+        when(owned.getUser()).thenReturn(owner);
         when(userService.getAuthenticatedUser()).thenReturn(owner);
 
         aspect.authorizeReturn(owned);
