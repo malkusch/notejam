@@ -26,8 +26,18 @@ public class AccountController {
     /**
      * The user service.
      */
+    private final UserService userService;
+
+    /**
+     * Builds the controller with its dependencies.
+     * 
+     * @param userService
+     *            user service
+     */
     @Autowired
-    private UserService userService;
+    AccountController(final UserService userService) {
+	this.userService = userService;
+    }
 
     /**
      * Shows the form.

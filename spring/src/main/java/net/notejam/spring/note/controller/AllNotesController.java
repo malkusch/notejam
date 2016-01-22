@@ -28,18 +28,29 @@ public class AllNotesController {
     /**
      * The note service.
      */
+    private final NoteService noteService;
+
+    /**
+     * Builds the controller with its dependencies.
+     *
+     * @param noteService
+     *            note service
+     */
     @Autowired
-    private NoteService noteService;
+    AllNotesController(final NoteService noteService) {
+	this.noteService = noteService;
+    }
 
     /**
      * Provide the model attribute "notes".
      *
-     * @param pageable The paging.
+     * @param pageable
+     *            The paging.
      * @return The model attribute "notes".
      */
     @ModelAttribute("notes")
     public Page<Note> notes(@PageableDefault(10) final Pageable pageable) {
-        return noteService.getNotes(pageable);
+	return noteService.getNotes(pageable);
     }
 
     /**
@@ -49,7 +60,7 @@ public class AllNotesController {
      */
     @RequestMapping(URITemplates.VIEW_ALL_NOTES)
     public String showAllNotes() {
-        return "notes";
+	return "notes";
     }
 
 }

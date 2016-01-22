@@ -33,8 +33,18 @@ public class EditPadController {
     /**
      * The pad service.
      */
+    private final PadService service;
+
+    /**
+     * Builds the controller with its dependencies.
+     * 
+     * @param service
+     *            pad service
+     */
     @Autowired
-    private PadService service;
+    EditPadController(final PadService service) {
+	this.service = service;
+    }
 
     /**
      * Provides the view model attribute "pad".

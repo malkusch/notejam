@@ -27,8 +27,18 @@ public class ViewNoteController {
     /**
      * The note service.
      */
+    private final NoteService service;
+
+    /**
+     * Builds the controller with its dependencies.
+     *
+     * @param service
+     *            note service
+     */
     @Autowired
-    private NoteService service;
+    ViewNoteController(final NoteService service) {
+	this.service = service;
+    }
 
     /**
      * Provides the model attribute "note".
@@ -39,7 +49,7 @@ public class ViewNoteController {
      */
     @ModelAttribute
     public Note note(@PathVariable("id") final int id) {
-        return service.getNote(id).orElseThrow(() -> new ResourceNotFoundException());
+	return service.getNote(id).orElseThrow(() -> new ResourceNotFoundException());
     }
 
     /**
@@ -49,7 +59,7 @@ public class ViewNoteController {
      */
     @RequestMapping(URITemplates.VIEW_NOTE)
     public String viewNote() {
-        return "note/view";
+	return "note/view";
     }
 
 }

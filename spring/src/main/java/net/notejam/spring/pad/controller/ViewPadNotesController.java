@@ -31,14 +31,26 @@ public class ViewPadNotesController {
     /**
      * The pad service.
      */
-    @Autowired
-    private PadService padService;
+    private final PadService padService;
 
     /**
      * The note service.
      */
+    private final NoteService noteService;
+
+    /**
+     * Builds the controller with its dependencies.
+     * 
+     * @param padService
+     *            pad service
+     * @param noteService
+     *            note service
+     */
     @Autowired
-    private NoteService noteService;
+    ViewPadNotesController(final PadService padService, final NoteService noteService) {
+	this.padService = padService;
+	this.noteService = noteService;
+    }
 
     /**
      * Provides the model attribute "pad".
@@ -49,7 +61,7 @@ public class ViewPadNotesController {
      */
     @ModelAttribute
     public Pad pad(@PathVariable("id") final int id) {
-        return padService.getPad(id);
+	return padService.getPad(id);
     }
 
     /**
@@ -64,7 +76,7 @@ public class ViewPadNotesController {
      */
     @ModelAttribute("notes")
     public Page<Note> notes(@ModelAttribute final Pad pad, @PageableDefault(10) final Pageable pageable) {
-        return noteService.getPadNotes(pad, pageable);
+	return noteService.getPadNotes(pad, pageable);
     }
 
     /**
@@ -76,7 +88,7 @@ public class ViewPadNotesController {
      */
     @RequestMapping(URITemplates.VIEW_PAD)
     public String viewPadNotes(final Pad pad) {
-        return "notes";
+	return "notes";
     }
 
 }

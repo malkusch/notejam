@@ -23,15 +23,25 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     /**
      * The user repository.
      */
+    private final UserRepository repository;
+
+    /**
+     * Builds the service with its dependencies.
+     * 
+     * @param repository
+     *            user repository
+     */
     @Autowired
-    private UserRepository repository;
+    UserDetailsServiceImpl(final UserRepository repository) {
+	this.repository = repository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(final String username) {
-        String password = repository.findOneByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("%s not found", username)))
-                .getPassword();
-        return new User(username, password, new ArrayList<>());
+	String password = repository.findOneByEmail(username)
+		.orElseThrow(() -> new UsernameNotFoundException(String.format("%s not found", username)))
+		.getPassword();
+	return new User(username, password, new ArrayList<>());
     }
 
 }

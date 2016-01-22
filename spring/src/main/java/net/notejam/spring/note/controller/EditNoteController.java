@@ -38,14 +38,26 @@ public class EditNoteController {
     /**
      * The note service.
      */
-    @Autowired
-    private NoteService service;
+    private final NoteService service;
 
     /**
      * The pad service.
      */
+    private final PadService padService;
+
+    /**
+     * Builds the controller with its dependencies.
+     *
+     * @param service
+     *            note service
+     * @param padService
+     *            pad service
+     */
     @Autowired
-    private PadService padService;
+    EditNoteController(final NoteService service, final PadService padService) {
+	this.service = service;
+	this.padService = padService;
+    }
 
     /**
      * Provides the model attribute "name".

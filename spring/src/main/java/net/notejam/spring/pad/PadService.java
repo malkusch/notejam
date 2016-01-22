@@ -42,14 +42,30 @@ public class PadService {
     private NoteService noteService;
 
     /**
+     * Builds the service with its dependencies.
+     * 
+     * @param padRepository
+     *            pad repository
+     * @param userService
+     *            user service
+     * @param noteService
+     *            note service
+     */
+    PadService(final PadRepository padRepository, final UserService userService, final NoteService noteService) {
+	this.padRepository = padRepository;
+	this.userService = userService;
+	this.noteService = noteService;
+    }
+
+    /**
      * Returns all pads for the currently authenticated user.
      *
      * @return The user's pads
      */
     @Transactional
     public List<Pad> getAllPads() {
-        User user = userService.getAuthenticatedUser();
-        return padRepository.findByUser(user);
+	User user = userService.getAuthenticatedUser();
+	return padRepository.findByUser(user);
     }
 
     /**
@@ -63,7 +79,7 @@ public class PadService {
      */
     @PermitOwner
     public Pad getPad(final int id) {
-        return Optional.ofNullable(padRepository.findOne(id)).orElseThrow(() -> new ResourceNotFoundException());
+	return Optional.ofNullable(padRepository.findOne(id)).orElseThrow(() -> new ResourceNotFoundException());
     }
 
     /**
@@ -74,9 +90,9 @@ public class PadService {
      */
     @Transactional
     public void deletePad(int id) {
-        Pad pad = getPad(id);
-        noteService.deleteNotes(pad);
-        padRepository.delete(pad);
+	Pad pad = getPad(id);
+	noteService.deleteNotes(pad);
+	padRepository.delete(pad);
     }
 
     /**
@@ -89,7 +105,7 @@ public class PadService {
      */
     @Transactional
     public void editPad(final Pad pad, final Name name) {
-        pad.edit(name);
+	pad.edit(name);
     }
 
     /**
@@ -100,9 +116,14 @@ public class PadService {
      */
     @Transactional
     public Pad createPad(final Name name) {
-        Pad pad = new Pad(name, userService.getAuthenticatedUser());
-        padRepository.save(pad);
-        return pad;
+	Pad pad = new Pad(name, userService.getAuthenticatedUser());
+	padRepository.save(pad);
+	return pad;
+    }
+    
+    @SuppressWarnings("unused")
+    private PadService() {
+	// Needed for by the DI framework for circular references.
     }
 
 }

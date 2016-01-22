@@ -31,8 +31,18 @@ public class CreatePadController {
     /**
      * The pad service.
      */
+    private final PadService service;
+
+    /**
+     * Builds the controller with its dependencies.
+     * 
+     * @param service
+     *            pad service
+     */
     @Autowired
-    private PadService service;
+    CreatePadController(final PadService service) {
+	this.service = service;
+    }
 
     /**
      * Shows the form for creating a pad.

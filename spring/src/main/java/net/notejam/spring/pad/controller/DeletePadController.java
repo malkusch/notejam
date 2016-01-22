@@ -28,8 +28,18 @@ public class DeletePadController {
     /**
      * The pad service.
      */
+    private final PadService service;
+
+    /**
+     * Builds the controller with its dependencies.
+     * 
+     * @param service
+     *            pad service
+     */
     @Autowired
-    private PadService service;
+    DeletePadController(final PadService service) {
+	this.service = service;
+    }
 
     /**
      * Provides the view model attribute "pad".
@@ -40,7 +50,7 @@ public class DeletePadController {
      */
     @ModelAttribute
     public Pad pad(@PathVariable("id") final int id) {
-        return service.getPad(id);
+	return service.getPad(id);
     }
 
     /**
@@ -50,7 +60,7 @@ public class DeletePadController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public String confirmDeletePad() {
-        return "pad/delete";
+	return "pad/delete";
     }
 
     /**
@@ -62,8 +72,8 @@ public class DeletePadController {
      */
     @RequestMapping(method = RequestMethod.POST)
     public String deletePad(@PathVariable("id") final int id) {
-        service.deletePad(id);
-        return String.format("redirect:%s?deleted", URITemplates.CREATE_PAD);
+	service.deletePad(id);
+	return String.format("redirect:%s?deleted", URITemplates.CREATE_PAD);
     }
 
 }

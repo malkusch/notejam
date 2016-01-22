@@ -34,8 +34,18 @@ public class CreateNoteController {
     /**
      * The note service.
      */
+    private final NoteService service;
+
+    /**
+     * Builds the controller with its dependencies.
+     *
+     * @param service
+     *            note service
+     */
     @Autowired
-    private NoteService service;
+    CreateNoteController(final NoteService service) {
+	this.service = service;
+    }
 
     /**
      * Shows the form for creating a note.

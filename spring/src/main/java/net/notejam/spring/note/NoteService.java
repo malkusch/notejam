@@ -27,20 +27,34 @@ public class NoteService {
     /**
      * The note repository.
      */
-    @Autowired
-    private NoteRepository repository;
+    private final NoteRepository repository;
 
     /**
      * The pad service.
      */
-    @Autowired
-    private PadService padService;
+    private final PadService padService;
 
     /**
      * The user service.
      */
+    private final UserService userService;
+
+    /**
+     * Builds the service with its dependencies.
+     * 
+     * @param repository
+     *            note repository
+     * @param padService
+     *            pad service
+     * @param userService
+     *            user service
+     */
     @Autowired
-    private UserService userService;
+    NoteService(final NoteRepository repository, final PadService padService, final UserService userService) {
+	this.repository = repository;
+	this.padService = padService;
+	this.userService = userService;
+    }
 
     /**
      * Loads a note from the storage.
@@ -51,7 +65,7 @@ public class NoteService {
      */
     @PermitOwner
     public Optional<Note> getNote(final int id) {
-        return Optional.ofNullable(repository.findOne(id));
+	return Optional.ofNullable(repository.findOne(id));
     }
 
     /**
@@ -63,7 +77,7 @@ public class NoteService {
      */
     @Transactional
     public Page<Note> getNotes(final Pageable pageable) {
-        return repository.findByUser(userService.getAuthenticatedUser(), pageable);
+	return repository.findByUser(userService.getAuthenticatedUser(), pageable);
     }
 
     /**
@@ -77,7 +91,7 @@ public class NoteService {
      */
     @Transactional
     public Page<Note> getPadNotes(@PermitOwner final Pad pad, final Pageable pageable) {
-        return repository.findByPad(pad, pageable);
+	return repository.findByPad(pad, pageable);
     }
 
     /**
@@ -91,15 +105,15 @@ public class NoteService {
      * @return The new note
      */
     public Note buildNote(final Integer padId) {
-        Note note = new Note();
-        note.setUpdated(Instant.now());
-        note.setUser(userService.getAuthenticatedUser());
+	Note note = new Note();
+	note.setUpdated(Instant.now());
+	note.setUser(userService.getAuthenticatedUser());
 
-        if (padId != null) {
-            note.setPad(padService.getPad(padId));
-        }
+	if (padId != null) {
+	    note.setPad(padService.getPad(padId));
+	}
 
-        return note;
+	return note;
     }
 
     /**
@@ -112,9 +126,9 @@ public class NoteService {
      */
     @Transactional
     public void saveNote(@PermitOwner final Note note, @PermitOwner final Pad pad) {
-        note.setPad(pad);
-        note.setUpdated(Instant.now());
-        repository.save(note);
+	note.setPad(pad);
+	note.setUpdated(Instant.now());
+	repository.save(note);
     }
 
     /**
@@ -125,7 +139,7 @@ public class NoteService {
      */
     @Transactional
     public void deleteNote(@PermitOwner final Note note) {
-        repository.delete(note);
+	repository.delete(note);
     }
 
     /**
@@ -136,7 +150,7 @@ public class NoteService {
      */
     @Transactional
     public void deleteNotes(@PermitOwner final Pad pad) {
-        repository.deleteByPad(pad);
+	repository.deleteByPad(pad);
     }
 
 }

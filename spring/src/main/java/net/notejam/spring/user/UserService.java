@@ -21,14 +21,26 @@ public class UserService {
     /**
      * The user repository.
      */
-    @Autowired
-    private UserRepository repository;
+    private final UserRepository repository;
 
     /**
      * The security service.
      */
+    private final SecurityService securityService;
+
+    /**
+     * Builds the service with its dependencies.
+     * 
+     * @param repository
+     *            user repository
+     * @param securityService
+     *            security service
+     */
     @Autowired
-    private SecurityService securityService;
+    UserService(final UserRepository repository, final SecurityService securityService) {
+	this.repository = repository;
+	this.securityService = securityService;
+    }
 
     /**
      * Checks if an email is already registered.
@@ -38,7 +50,7 @@ public class UserService {
      * @return True, if the email is already registered.
      */
     public boolean isEmailRegistered(final String email) {
-        return repository.findOneByEmail(email).isPresent();
+	return repository.findOneByEmail(email).isPresent();
     }
 
     /**
@@ -47,9 +59,9 @@ public class UserService {
      * @return The currently authenticated user.
      */
     public User getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        return repository.findOneByEmail(email).get();
+	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	String email = authentication.getName();
+	return repository.findOneByEmail(email).get();
     }
 
     /**
@@ -60,8 +72,8 @@ public class UserService {
      */
     @Transactional
     public void changePassword(final String password) {
-        User user = getAuthenticatedUser();
-        changePassword(user, password);
+	User user = getAuthenticatedUser();
+	changePassword(user, password);
     }
 
     /**
@@ -74,8 +86,8 @@ public class UserService {
      */
     @Transactional
     public void changePassword(final User user, final String password) {
-        user.setPassword(securityService.encodePassword(password));
-        repository.save(user);
+	user.setPassword(securityService.encodePassword(password));
+	repository.save(user);
     }
 
     /**
@@ -89,11 +101,11 @@ public class UserService {
      */
     @Transactional
     public User signUp(String emailAddress, String password) {
-        User user = new User();
-        user.setEmail(emailAddress);
-        user.setPassword(securityService.encodePassword(password));
-        repository.save(user);
-        return user;
+	User user = new User();
+	user.setEmail(emailAddress);
+	user.setPassword(securityService.encodePassword(password));
+	repository.save(user);
+	return user;
     }
 
 }

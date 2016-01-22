@@ -24,8 +24,18 @@ public class SignupController {
     /**
      * The user service.
      */
+    private final UserService userService;
+
+    /**
+     * Builds the controller with its dependencies.
+     * 
+     * @param userService
+     *            user service
+     */
     @Autowired
-    private UserService userService;
+    SignupController(final UserService userService) {
+	this.userService = userService;
+    }
 
     /**
      * Shows the sign up form.
@@ -36,7 +46,7 @@ public class SignupController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public String showForm(final SignupUser signupUser) {
-        return "user/signup";
+	return "user/signup";
     }
 
     /**
@@ -51,13 +61,13 @@ public class SignupController {
     @RequestMapping(method = RequestMethod.POST)
     public String signup(@Valid final SignupUser signupUser, final Errors errors) {
 
-        if (errors.hasErrors()) {
-            return showForm(signupUser);
-        }
+	if (errors.hasErrors()) {
+	    return showForm(signupUser);
+	}
 
-        userService.signUp(signupUser.getEmailAddress(), signupUser.getPassword());
+	userService.signUp(signupUser.getEmailAddress(), signupUser.getPassword());
 
-        return String.format("redirect:%s?signup", URITemplates.SIGNIN);
+	return String.format("redirect:%s?signup", URITemplates.SIGNIN);
     }
 
 }

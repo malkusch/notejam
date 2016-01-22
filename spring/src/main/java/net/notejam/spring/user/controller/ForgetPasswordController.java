@@ -29,8 +29,18 @@ public class ForgetPasswordController {
     /**
      * The password recovery service.
      */
+    private final PasswordRecoveryService recoveryService;
+
+    /**
+     * Builds the controller with its dependencies.
+     * 
+     * @param recoveryService
+     *            recovery service
+     */
     @Autowired
-    private PasswordRecoveryService recoveryService;
+    ForgetPasswordController(final PasswordRecoveryService recoveryService) {
+	this.recoveryService = recoveryService;
+    }
 
     /**
      * Shows the form.

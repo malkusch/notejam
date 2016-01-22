@@ -29,8 +29,18 @@ public class DeleteNoteController {
     /**
      * The note service.
      */
+    private final NoteService service;
+
+    /**
+     * Builds the controller with its dependencies.
+     *
+     * @param service
+     *            note service
+     */
     @Autowired
-    private NoteService service;
+    DeleteNoteController(final NoteService service) {
+	this.service = service;
+    }
 
     /**
      * Provides the model attribute "note".
@@ -41,7 +51,7 @@ public class DeleteNoteController {
      */
     @ModelAttribute
     public Note note(@PathVariable("id") final int id) {
-        return service.getNote(id).orElseThrow(() -> new ResourceNotFoundException());
+	return service.getNote(id).orElseThrow(() -> new ResourceNotFoundException());
     }
 
     /**
@@ -51,7 +61,7 @@ public class DeleteNoteController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public String confirmDeleteNote() {
-        return "note/delete";
+	return "note/delete";
     }
 
     /**
@@ -63,8 +73,8 @@ public class DeleteNoteController {
      */
     @RequestMapping(method = RequestMethod.POST)
     public String deleteNote(final Note note) {
-        service.deleteNote(note);
-        return String.format("redirect:%s?deleted", URITemplates.CREATE_NOTE);
+	service.deleteNote(note);
+	return String.format("redirect:%s?deleted", URITemplates.CREATE_NOTE);
     }
 
 }

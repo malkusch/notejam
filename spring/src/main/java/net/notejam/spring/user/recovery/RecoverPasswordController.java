@@ -24,8 +24,18 @@ public class RecoverPasswordController {
     /**
      * The recovery service.
      */
+    private final PasswordRecoveryService recoveryService;
+
+    /**
+     * Builds the controller with its dependencies.
+     * 
+     * @param recoveryService
+     *            recovery service
+     */
     @Autowired
-    private PasswordRecoveryService recoveryService;
+    RecoverPasswordController(final PasswordRecoveryService recoveryService) {
+	this.recoveryService = recoveryService;
+    }
 
     /**
      * Shows the password.
@@ -42,10 +52,10 @@ public class RecoverPasswordController {
      */
     @RequestMapping(URITemplates.RECOVER_PASSWORD)
     public String revealPassword(@PathVariable("id") final int id, @PathVariable("token") final String token,
-            @ModelAttribute("password") final StringBuilder password) throws InvalidTokenException {
+	    @ModelAttribute("password") final StringBuilder password) throws InvalidTokenException {
 
-        password.append(recoveryService.recoverPassword(id, token));
-        return "user/reveal-password";
+	password.append(recoveryService.recoverPassword(id, token));
+	return "user/reveal-password";
     }
 
     /**
@@ -56,7 +66,7 @@ public class RecoverPasswordController {
     @ExceptionHandler(InvalidTokenException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleInvalidToken() {
-        return "error";
+	return "error";
     }
 
 }

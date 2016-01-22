@@ -43,8 +43,18 @@ public class PadsAdvice {
     /**
      * The pad service.
      */
+    private final PadService service;
+
+    /**
+     * Builds the advice with its dependencies.
+     * 
+     * @param service
+     *            pad service
+     */
     @Autowired
-    private PadService service;
+    PadsAdvice(final PadService service) {
+	this.service = service;
+    }
 
     /**
      * Provides the model attribute "pads". I.e. all pads of the currently
