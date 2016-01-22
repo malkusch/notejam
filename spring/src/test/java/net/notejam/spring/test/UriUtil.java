@@ -12,7 +12,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import net.notejam.spring.URITemplates;
+import net.notejam.spring.presentation.URITemplates;
 
 /**
  * URI test utility.

@@ -11,7 +11,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import net.notejam.spring.Application;
+import net.notejam.spring.WebApplication;
 
 /**
  * This annotation activates a spring context for integration testing.
@@ -19,7 +19,7 @@ import net.notejam.spring.Application;
  * @author markus@malkusch.de
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
  */
-@SpringApplicationConfiguration(Application.class)
+@SpringApplicationConfiguration(WebApplication.class)
 @WebAppConfiguration
 @ActiveProfiles("test")
 @Transactional

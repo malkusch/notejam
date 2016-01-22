@@ -29,30 +29,30 @@
 				</th>
 			</tr>
 			<tr th:each="note : ${notes}">
-				<td><a th:href="@{${T(net.notejam.spring.URITemplates).VIEW_NOTE}(id=${note.id})}" href="#" th:text="${note.name}">My sport activities</a></td>
-				<td class="pad" th:if="${note.pad != null}">
-				    <a th:href="@{${T(net.notejam.spring.URITemplates).VIEW_PAD}(id=${note.pad.id})}" href="#" th:text="${note.pad.name}">
+				<td><a th:href="@{${T(net.notejam.spring.presentation.URITemplates).VIEW_NOTE}(id=${note.id})}" href="#" th:text="${note.name}">My sport activities</a></td>
+				<td class="pad" th:if="${note.pad.present}">
+				    <a th:href="@{${T(net.notejam.spring.presentation.URITemplates).VIEW_PAD}(id=${note.pad.get().id})}" href="#" th:text="${note.pad.get().name}">
 				    Pad
 				    </a>
 			    </td>
-				<td class="pad" th:if="${note.pad == null}" th:text="#{pad.view.noPad}">No Pad</td>
+				<td class="pad" th:if="${!note.pad.present}" th:text="#{pad.view.noPad}">No Pad</td>
 				<td class="hidden-text date" notejam:date="${note.updated}">Just now</td>
 			</tr>
 		</table>
-		<a th:if="${pad == null}" th:href="@{${T(net.notejam.spring.URITemplates).CREATE_NOTE}}" href="#" class="button" th:text="#{pad.view.newNote}">New note</a>
+		<a th:if="${pad == null}" th:href="@{${T(net.notejam.spring.presentation.URITemplates).CREATE_NOTE}}" href="#" class="button" th:text="#{pad.view.newNote}">New note</a>
 		
-		<a th:if="${pad != null}" th:href="@{${T(net.notejam.spring.URITemplates).CREATE_NOTE_FOR_PAD}(id=${pad.id})}" href="#" class="button" th:text="#{pad.view.newNote}">New note</a>
-		<a th:if="${pad != null}" th:href="@{${T(net.notejam.spring.URITemplates).EDIT_PAD}(id=${pad.id})}" href="#" th:text="#{pad.view.settings}">Pad settings</a>
+		<a th:if="${pad != null}" th:href="@{${T(net.notejam.spring.presentation.URITemplates).CREATE_NOTE_FOR_PAD}(id=${pad.id})}" href="#" class="button" th:text="#{pad.view.newNote}">New note</a>
+		<a th:if="${pad != null}" th:href="@{${T(net.notejam.spring.presentation.URITemplates).EDIT_PAD}(id=${pad.id})}" href="#" th:text="#{pad.view.settings}">Pad settings</a>
 		
 		<div th:if="${notes.getTotalPages() > 1}" class="pagination">
 	          <a th:if   = "${pad != null}"
 	             th:each = "page : ${#numbers.sequence(1, notes.getTotalPages())}"
-	             th:href = "@{${T(net.notejam.spring.URITemplates).VIEW_PAD}(id=${pad.id},page=${page - 1},sort=${param.sort})}"
+	             th:href = "@{${T(net.notejam.spring.presentation.URITemplates).VIEW_PAD}(id=${pad.id},page=${page - 1},sort=${param.sort})}"
 	             th:text = "${page}">1</a>
 
 	          <a th:if   = "${pad == null}"
 	             th:each = "page : ${#numbers.sequence(1, notes.getTotalPages())}"
-	             th:href = "@{${T(net.notejam.spring.URITemplates).VIEW_ALL_NOTES}(page=${page - 1},sort=${param.sort})}"
+	             th:href = "@{${T(net.notejam.spring.presentation.URITemplates).VIEW_ALL_NOTES}(page=${page - 1},sort=${param.sort})}"
 	             th:text = "${page}">2</a>
 		</div>
 	</div>

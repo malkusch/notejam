@@ -39,16 +39,16 @@
 	<div class="container">
 		<div class="sixteen columns">
 			<div class="sign-in-out-block" sec:authorize="isAnonymous()">
-				<a th:href="@{${T(net.notejam.spring.URITemplates).SIGNUP}}"
+				<a th:href="@{${T(net.notejam.spring.presentation.URITemplates).SIGNUP}}"
 					href="#" th:text="#{menu.signup}">Sign up</a>&nbsp;&nbsp;&nbsp;<a
-					th:href="@{${T(net.notejam.spring.URITemplates).SIGNIN}}" href="#"
+					th:href="@{${T(net.notejam.spring.presentation.URITemplates).SIGNIN}}" href="#"
 					th:text="#{menu.signin}">Sign in</a>
 			</div>
 			<div class="sign-in-out-block" sec:authorize="isAuthenticated()">
-				<form th:action="@{${T(net.notejam.spring.URITemplates).SIGNOUT}}"
+				<form th:action="@{${T(net.notejam.spring.presentation.URITemplates).SIGNOUT}}"
 					method="POST">
 					<span sec:authentication="name">Bob</span> <a
-						th:href="@{${T(net.notejam.spring.URITemplates).SETTINGS}}"
+						th:href="@{${T(net.notejam.spring.presentation.URITemplates).SETTINGS}}"
 						href="#" th:text="#{menu.account}">Account</a>&nbsp;&nbsp;&nbsp;<input
 						type="submit" th:value="#{menu.signout}" />
 				</form>
@@ -66,13 +66,13 @@
 			<nav>
 				<ul th:if="${!pads.isEmpty()}">
 					<li th:each="pad : ${pads}">
-					   <a th:href="@{${T(net.notejam.spring.URITemplates).VIEW_PAD}(id=${pad.id})}" href="#" th:text="${pad.name}">Business</a>
+					   <a th:href="@{${T(net.notejam.spring.presentation.URITemplates).VIEW_PAD}(id=${pad.id})}" href="#" th:text="${pad.name}">Business</a>
 				    </li>
 				</ul>
 				<p th:if="${pads.isEmpty()}" th:text="#{layout.noPads}"
 					class="empty">No pads</p>
 				<hr />
-				<a th:href="@{${T(net.notejam.spring.URITemplates).CREATE_PAD}}"
+				<a th:href="@{${T(net.notejam.spring.presentation.URITemplates).CREATE_PAD}}"
 					href="#" th:text="#{layout.newPad}">New pad</a>
 			</nav>
 		</div>
