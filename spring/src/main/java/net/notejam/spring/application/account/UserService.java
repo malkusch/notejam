@@ -74,7 +74,7 @@ public class UserService {
      */
     @PreAuthorize("isAuthenticated()")
     public void changePassword(final PlainTextPassword password) {
-	User user = authenticationService.getAuthenticatedUser();
+	User user = authenticationService.authenticatedUser();
 	user.changePassword(encodingService.encode(password));
 	repository.save(user);
     }

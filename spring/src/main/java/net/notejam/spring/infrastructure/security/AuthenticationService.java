@@ -3,7 +3,8 @@ package net.notejam.spring.infrastructure.security;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
+import org.springframework.stereotype.Service;
 
 import net.notejam.spring.domain.account.User;
 
@@ -13,8 +14,30 @@ import net.notejam.spring.domain.account.User;
  * @author markus@malkusch.de
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
  */
-@Component
+@Service
 public class AuthenticationService {
+
+    /**
+     * The security context holder strategy.
+     */
+    private final SecurityContextHolderStrategy contextHolder;
+
+    /**
+     * Builds the service with the default spring security holder context strategy.
+     */
+    AuthenticationService() {
+	this(SecurityContextHolder.getContextHolderStrategy());
+    }
+
+    /**
+     * Builds the service
+     * 
+     * @param contextHolder
+     *            security context holder strategy
+     */
+    AuthenticationService(final SecurityContextHolderStrategy contextHolder) {
+	this.contextHolder = contextHolder;
+    }
 
     /**
      * Returns the currently authenticated user.
@@ -23,8 +46,8 @@ public class AuthenticationService {
      * @throws AccessDeniedException
      *             if currently no user is authenticated
      */
-    public User getAuthenticatedUser() {
-	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public User authenticatedUser() {
+	Authentication authentication = contextHolder.getContext().getAuthentication();
 	if (authentication == null) {
 	    throw new AccessDeniedException("No user is authenticated.");
 	}

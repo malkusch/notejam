@@ -9,13 +9,11 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.security.access.AccessDeniedException;
 
-import net.notejam.spring.domain.account.User;
+import net.notejam.spring.application.security.AuthorizationService;
 import net.notejam.spring.domain.account.security.Owned;
 import net.notejam.spring.infrastructure.reflection.Annotated;
 import net.notejam.spring.infrastructure.reflection.ReflectionUtils;
-import net.notejam.spring.infrastructure.security.AuthenticationService;
 
 /**
  * Grant access only to the authenticated owner of an object.
@@ -31,19 +29,19 @@ import net.notejam.spring.infrastructure.security.AuthenticationService;
 public class PermitOwnerAspect {
 
     /**
-     * The authentication service.
+     * The authorization service.
      */
     @Autowired
-    private AuthenticationService authenticationService;
+    private AuthorizationService authorizationService;
 
     /**
-     * Sets the authentication service.
+     * Sets the authorization service.
      *
-     * @param authenticationService
-     *            authentication service
+     * @param authorizationService
+     *            authorization service
      */
-    void setAuthenticationService(final AuthenticationService authenticationService) {
-	this.authenticationService = authenticationService;
+    void setAuthenticationService(final AuthorizationService authorizationService) {
+	this.authorizationService = authorizationService;
     }
 
     /**
@@ -68,7 +66,7 @@ public class PermitOwnerAspect {
 		continue;
 
 	    }
-	    authorize(annotated.getObject());
+	    authorizationService.authorize(annotated.getObject());
 
 	}
     }
@@ -87,36 +85,14 @@ public class PermitOwnerAspect {
      * @param entity
      *            The owned entity.
      */
+    @SuppressWarnings("unchecked")
     @AfterReturning(pointcut = "net.notejam.spring.infrastructure.security.owner.PermitOwnerAspect.restrictOwnedResults()", returning = "entity")
     public void authorizeReturn(final Object entity) {
 	if (entity instanceof Owned) {
-	    authorize((Owned) entity);
+	    authorizationService.authorize((Owned) entity);
 
 	} else if (entity instanceof Optional) {
-	    authorize(((Optional<Owned>) entity).orElse(null));
-	}
-    }
-
-    /**
-     * Checks authorization of an owned entity.
-     *
-     * If the entity is null authorization is granted.
-     *
-     * @param owned
-     *            The owned entity or null.
-     */
-    private void authorize(final Owned owned) {
-	if (owned == null) {
-	    return;
-	}
-
-	User user = authenticationService.getAuthenticatedUser();
-	if (user.equals(owned.getOwner())) {
-	    return;
-
-	} else {
-	    throw new AccessDeniedException(String.format("User %s is not allowed to access object of user %s.",
-		    user.getId(), owned.getOwner().getId()));
+	    authorizationService.authorize((Optional<Owned>) entity);
 	}
     }
 

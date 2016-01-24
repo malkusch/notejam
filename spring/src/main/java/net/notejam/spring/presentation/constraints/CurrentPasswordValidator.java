@@ -46,7 +46,7 @@ public class CurrentPasswordValidator implements ConstraintValidator<CurrentPass
 	    }
 
 	    PlainTextPassword plain = new PlainTextPassword(password);
-	    EncodedPassword encoded = authenticationService.getAuthenticatedUser().getPassword();
+	    EncodedPassword encoded = authenticationService.authenticatedUser().getPassword();
 
 	    return securityService.matches(plain, encoded);
 

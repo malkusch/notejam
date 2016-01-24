@@ -21,7 +21,7 @@ import net.notejam.spring.test.SignedUpUserProvider;
  */
 @IntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
-public class AuthenticationServiceTest {
+public class AuthenticationServiceIntegrationTest {
 
     @Autowired
     private AuthenticationService service;
@@ -36,7 +36,7 @@ public class AuthenticationServiceTest {
     @Test
     @WithUserDetails(SignedUpUserProvider.EMAIL)
     public void testGetAuthenticatedUser() {
-        assertEquals(new EmailAddress(SignedUpUserProvider.EMAIL), service.getAuthenticatedUser().getEmailAddress());
+        assertEquals(new EmailAddress(SignedUpUserProvider.EMAIL), service.authenticatedUser().getEmailAddress());
     }
 
 }
