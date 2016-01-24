@@ -79,6 +79,7 @@ public class AuthorizationServiceTest {
     /**
      * Anonymous access should be denied for a user.
      */
+    @SuppressWarnings("unchecked")
     @Test(expected = AccessDeniedException.class)
     public void denyAnonymousAccessToUser() {
 	when(authenticationService.authenticatedUser()).thenThrow(AccessDeniedException.class);
@@ -88,6 +89,7 @@ public class AuthorizationServiceTest {
     /**
      * Anonymous access should be denied for an owned entity.
      */
+    @SuppressWarnings("unchecked")
     @Test(expected = AccessDeniedException.class)
     public void denyAnonymousAccessToOwned() {
 	when(authenticationService.authenticatedUser()).thenThrow(AccessDeniedException.class);
@@ -97,6 +99,7 @@ public class AuthorizationServiceTest {
     /**
      * Anonymous access should be denied for an optional owned entity.
      */
+    @SuppressWarnings("unchecked")
     @Test(expected = AccessDeniedException.class)
     public void denyAnonymousAccessToOptionalOwned() {
 	when(authenticationService.authenticatedUser()).thenThrow(AccessDeniedException.class);
