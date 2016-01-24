@@ -3,6 +3,7 @@ package net.notejam.spring.domain;
 import java.time.Instant;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -40,7 +41,7 @@ public final class Pad extends AbstractPersistable<Integer>implements Owned {
     /**
      * The owner.
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private User owner;
 

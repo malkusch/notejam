@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -38,7 +39,7 @@ public final class Note extends AbstractPersistable<Integer> implements Owned {
     /**
      * The owner.
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private User owner;
 
