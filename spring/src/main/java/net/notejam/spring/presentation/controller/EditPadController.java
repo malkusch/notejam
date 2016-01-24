@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import net.notejam.spring.application.PadService;
 import net.notejam.spring.domain.Name;
@@ -92,20 +91,7 @@ final class EditPadController {
 
 	service.editPad(pad.getId(), new Name(editPad.getName()));
 
-	return String.format("redirect:%s", buildEditedPadUri(pad.getId()));
-    }
-
-    /**
-     * Builds the URI for the edited pad.
-     *
-     * @param id
-     *            pad id
-     * @return uri
-     */
-    private static String buildEditedPadUri(final int id) {
-	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(URITemplates.EDIT_PAD);
-	uriBuilder.queryParam("success");
-	return uriBuilder.buildAndExpand(id).toUriString();
+	return String.format("redirect:%s", URITemplates.buildEditedPadURI(pad.getId()));
     }
 
 }

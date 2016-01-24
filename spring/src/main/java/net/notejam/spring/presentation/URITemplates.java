@@ -99,7 +99,59 @@ public interface URITemplates {
      * The view all notes path. This is the default path.
      */
     String VIEW_ALL_NOTES = "/";
+
+    /**
+     * Builds the URI for the created pad.
+     *
+     * @param id
+     *            The pad id
+     * @return URI
+     */
+    static URI buildCreatedPadURI(final int id) {
+	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(VIEW_PAD);
+	uriBuilder.queryParam("createdSuccessfully");
+	return uriBuilder.buildAndExpand(id).toUri();
+    }
     
+    /**
+     * Builds the URI for the created note.
+     *
+     * @param id
+     *            The note id
+     * @return URI
+     */
+    static URI buildCreatedNoteURI(final int id) {
+	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(VIEW_NOTE);
+	uriBuilder.queryParam("successful");
+	return uriBuilder.buildAndExpand(id).toUri();
+    }
+    
+    /**
+     * Builds the URI for the edited note.
+     *
+     * @param id
+     *            The note id
+     * @return URI
+     */
+    static URI buildEditedNoteURI(final int id) {
+	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(VIEW_NOTE);
+	uriBuilder.queryParam("successful");
+	return uriBuilder.buildAndExpand(id).toUri();
+    }
+
+    /**
+     * Builds the URI for the edited pad.
+     *
+     * @param id
+     *            pad id
+     * @return URI
+     */
+    static URI buildEditedPadURI(final int id) {
+	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(EDIT_PAD);
+	uriBuilder.queryParam("success");
+	return uriBuilder.buildAndExpand(id).toUri();
+    }
+
     /**
      * Builds the fully qualified URI for recovering the password.
      *
@@ -110,13 +162,13 @@ public interface URITemplates {
      * @return password recovery URI
      */
     static URI buildPasswordRecoveryURI(final RecoveryToken token, final URI baseUri) {
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(baseUri);
-        
-        Map<String, String> uriVariables = new HashMap<>();
-        uriVariables.put("id", token.getId().toString());
-        uriVariables.put("token", token.getToken());
+	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(baseUri);
 
-        return uriBuilder.replacePath(RECOVER_PASSWORD).buildAndExpand(uriVariables).toUri();
+	Map<String, String> uriVariables = new HashMap<>();
+	uriVariables.put("id", token.getId().toString());
+	uriVariables.put("token", token.getToken());
+
+	return uriBuilder.replacePath(RECOVER_PASSWORD).buildAndExpand(uriVariables).toUri();
     }
 
 }

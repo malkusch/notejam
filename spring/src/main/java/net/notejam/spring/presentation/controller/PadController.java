@@ -11,7 +11,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import net.notejam.spring.application.PadService;
 import net.notejam.spring.domain.Name;
@@ -80,7 +79,7 @@ final class PadController {
 
 	Pad pad = service.createPad(new Name(createPad.getName()), authenticatedUser.getUser());
 
-	return String.format("redirect:%s", buildCreatedPadUri(pad.getId()));
+	return String.format("redirect:%s", URITemplates.buildCreatedPadURI(pad.getId()));
     }
     
     /**
@@ -105,19 +104,6 @@ final class PadController {
     String deletePad(@PathVariable("id") final int id) {
 	service.deletePad(id);
 	return String.format("redirect:%s?deleted", URITemplates.CREATE_PAD);
-    }
-
-    /**
-     * Builds the URI for the created pad.
-     *
-     * @param id
-     *            The pad id
-     * @return The URI
-     */
-    private static String buildCreatedPadUri(final int id) {
-	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(URITemplates.VIEW_PAD);
-	uriBuilder.queryParam("createdSuccessfully");
-	return uriBuilder.buildAndExpand(id).toUriString();
     }
 
 }

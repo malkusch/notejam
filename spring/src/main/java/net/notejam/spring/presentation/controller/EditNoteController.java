@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import net.notejam.spring.application.NoteService;
 import net.notejam.spring.domain.Name;
@@ -102,20 +101,7 @@ final class EditNoteController {
 
 	service.editNote(id, new Name(editNote.getName()), editNote.getPadId(), editNote.getText());
 
-	return String.format("redirect:%s", buildEditedNoteUri(id));
-    }
-
-    /**
-     * Builds the URI for the edited note.
-     *
-     * @param id
-     *            The note id
-     * @return The URI
-     */
-    private static String buildEditedNoteUri(final int id) {
-	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(URITemplates.VIEW_NOTE);
-	uriBuilder.queryParam("successful");
-	return uriBuilder.buildAndExpand(id).toUriString();
+	return String.format("redirect:%s", URITemplates.buildEditedNoteURI(id));
     }
 
 }

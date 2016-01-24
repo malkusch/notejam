@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import net.notejam.spring.application.NoteService;
 import net.notejam.spring.domain.Name;
@@ -136,20 +135,7 @@ final class NoteController {
 	Note note = service.writeNote(new Name(createNote.getName()), authenticatedUser.getUser(),
 		createNote.getPadId(), createNote.getText());
 
-	return String.format("redirect:%s", buildCreatedNoteUri(note.getId()));
-    }
-
-    /**
-     * Builds the URI for the created note.
-     *
-     * @param id
-     *            The note id
-     * @return The URI
-     */
-    private static String buildCreatedNoteUri(final int id) {
-	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(URITemplates.VIEW_NOTE);
-	uriBuilder.queryParam("successful");
-	return uriBuilder.buildAndExpand(id).toUriString();
+	return String.format("redirect:%s", URITemplates.buildCreatedNoteURI(note.getId()));
     }
 
     /**
