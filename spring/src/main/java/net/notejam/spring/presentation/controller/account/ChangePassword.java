@@ -5,7 +5,6 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import de.malkusch.validation.constraints.EqualProperties;
-import net.notejam.spring.presentation.constraints.CurrentPassword;
 import net.notejam.spring.presentation.constraints.Password;
 
 /**
@@ -23,7 +22,6 @@ public interface ChangePassword {
      * @return The current password.
      */
     @NotEmpty
-    @CurrentPassword
     String getCurrentPassword();
 
     /**

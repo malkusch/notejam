@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import net.notejam.spring.domain.account.ChangePasswordService;
 import net.notejam.spring.domain.account.EmailAddress;
 import net.notejam.spring.domain.account.EmailAddressExistsException;
 import net.notejam.spring.domain.account.User;
 import net.notejam.spring.domain.account.UserFactory;
 import net.notejam.spring.domain.account.UserRepository;
-import net.notejam.spring.domain.account.security.PasswordEncodingService;
+import net.notejam.spring.domain.account.WrongPasswordException;
 import net.notejam.spring.domain.account.security.PlainTextPassword;
 import net.notejam.spring.infrastructure.security.AuthenticationService;
 
@@ -26,9 +27,9 @@ import net.notejam.spring.infrastructure.security.AuthenticationService;
 public class UserService {
 
     /**
-     * The password encoding service.
+     * The change password service.
      */
-    private final PasswordEncodingService encodingService;
+    private final ChangePasswordService changePasswordService;
 
     /**
      * The user repository.
@@ -48,8 +49,8 @@ public class UserService {
     /**
      * Builds the service with its dependencies.
      * 
-     * @param encodingService
-     *            password encoding service
+     * @param changePasswordService
+     *            change password service
      * @param factory
      *            user factory
      * @param authenticationService
@@ -58,10 +59,10 @@ public class UserService {
      *            user repository
      */
     @Autowired
-    UserService(final PasswordEncodingService encodingService, final UserFactory factory,
+    UserService(final ChangePasswordService changePasswordService, final UserFactory factory,
 	    final AuthenticationService authenticationService, final UserRepository repository) {
 
-	this.encodingService = encodingService;
+	this.changePasswordService = changePasswordService;
 	this.factory = factory;
 	this.authenticationService = authenticationService;
 	this.repository = repository;
@@ -70,13 +71,19 @@ public class UserService {
     /**
      * Sets a new password.
      *
-     * @param password
-     *            The new password
+     * @param oldPassword
+     *            current password
+     * @param newPassword
+     *            new password
+     * @throws WrongPasswordException
+     *             if the current password does not match for the user
      */
     @PreAuthorize("isAuthenticated()")
-    public void changePassword(final PlainTextPassword password) {
+    public void changePassword(final PlainTextPassword oldPassword, final PlainTextPassword newPassword)
+	    throws WrongPasswordException {
+
 	User user = authenticationService.authenticatedUser();
-	user.changePassword(encodingService.encode(password));
+	changePasswordService.changePassword(user, oldPassword, newPassword);
 	repository.save(user);
     }
 

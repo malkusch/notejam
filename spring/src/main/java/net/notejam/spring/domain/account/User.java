@@ -76,7 +76,7 @@ public final class User extends AbstractPersistable<Integer> {
      * @param password
      *            new encoded password
      */
-    public void changePassword(EncodedPassword password) {
+    void changePassword(final EncodedPassword password) {
 	if (password == null) {
 	    throw new NullPointerException();
 	}

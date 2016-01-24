@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import net.notejam.spring.application.account.UserService;
 import net.notejam.spring.domain.account.EmailAddress;
 import net.notejam.spring.domain.account.EmailAddressExistsException;
+import net.notejam.spring.domain.account.WrongPasswordException;
 import net.notejam.spring.domain.account.security.PlainTextPassword;
 import net.notejam.spring.presentation.URITemplates;
 
@@ -67,9 +68,17 @@ final class UserController {
             return showChangePasswordForm(changePassword);
         }
 
-        userService.changePassword(new PlainTextPassword(changePassword.getNewPassword()));
-
-        return String.format("redirect:%s?success", URITemplates.SETTINGS);
+        try {
+            PlainTextPassword newPassword = new PlainTextPassword(changePassword.getNewPassword());
+            PlainTextPassword oldPassword = new PlainTextPassword(changePassword.getCurrentPassword());
+            userService.changePassword(oldPassword, newPassword);
+    
+            return String.format("redirect:%s?success", URITemplates.SETTINGS);
+            
+        } catch (WrongPasswordException e) {
+            errors.rejectValue("currentPassword", "CurrentPassword");
+            return showChangePasswordForm(changePassword);
+        }
     }
     
     /**

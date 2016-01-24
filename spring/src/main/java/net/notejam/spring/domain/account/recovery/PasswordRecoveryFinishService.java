@@ -3,9 +3,8 @@ package net.notejam.spring.domain.account.recovery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.notejam.spring.domain.account.ChangePasswordService;
 import net.notejam.spring.domain.account.User;
-import net.notejam.spring.domain.account.security.EncodedPassword;
-import net.notejam.spring.domain.account.security.PasswordEncodingService;
 import net.notejam.spring.domain.account.security.PlainTextPassword;
 import net.notejam.spring.infrastructure.security.RandomStringGenerator;
 
@@ -29,9 +28,9 @@ public class PasswordRecoveryFinishService {
     private final RandomStringGenerator passwordGenerator;
 
     /**
-     * The password encoding service
+     * The change password service.
      */
-    private final PasswordEncodingService encodingService;
+    private final ChangePasswordService changePasswordService;
 
     /**
      * Builds the service
@@ -40,16 +39,16 @@ public class PasswordRecoveryFinishService {
      *            token repository
      * @param passwordGenerator
      *            password generator
-     * @param encodingService
-     *            password encoding service
+     * @param changePasswordService
+     *            change password service
      */
     @Autowired
-    PasswordRecoveryFinishService(final RecoveryTokenRepository repository, final RandomStringGenerator passwordGenerator,
-	    final PasswordEncodingService encodingService) {
+    PasswordRecoveryFinishService(final RecoveryTokenRepository repository,
+	    final RandomStringGenerator passwordGenerator, final ChangePasswordService changePasswordService) {
 
 	this.repository = repository;
 	this.passwordGenerator = passwordGenerator;
-	this.encodingService = encodingService;
+	this.changePasswordService = changePasswordService;
     }
 
     /**
@@ -64,27 +63,25 @@ public class PasswordRecoveryFinishService {
      *             The token was not valid
      */
     public String finishPasswordRecovery(final int tokenId, final String token) throws InvalidTokenException {
-        RecoveryToken recoveryToken = repository.findOne(tokenId);
+	RecoveryToken recoveryToken = repository.findOne(tokenId);
 
-        if (recoveryToken == null) {
-            throw new InvalidTokenException("Token id is invalid.");
-        }
-        if (recoveryToken.isExpired()) {
-            throw new InvalidTokenException("Token is expired.");
-        }
-        if (!recoveryToken.getToken().equals(token)) {
-            throw new InvalidTokenException("Token doesn't match.");
-        }
+	if (recoveryToken == null) {
+	    throw new InvalidTokenException("Token id is invalid.");
+	}
+	if (recoveryToken.isExpired()) {
+	    throw new InvalidTokenException("Token is expired.");
+	}
+	if (!recoveryToken.getToken().equals(token)) {
+	    throw new InvalidTokenException("Token doesn't match.");
+	}
 
-        String password = passwordGenerator.generatePassword();
-        User user = recoveryToken.getUser();
-        
-        EncodedPassword encodedPassword = encodingService.encode(new PlainTextPassword(password));
-        user.changePassword(encodedPassword);
-        
-        repository.delete(recoveryToken);
+	String password = passwordGenerator.generatePassword();
+	User user = recoveryToken.getUser();
 
-        return password;
+	changePasswordService.changePassword(user, new PlainTextPassword(password));
+	repository.delete(recoveryToken);
+
+	return password;
     }
 
 }

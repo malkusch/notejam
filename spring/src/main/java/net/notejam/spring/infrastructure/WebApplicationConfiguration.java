@@ -4,11 +4,8 @@ import java.util.concurrent.Executor;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.orm.jpa.EntityScan;
-import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.core.env.PropertySource;
@@ -28,8 +25,6 @@ import net.notejam.spring.infrastructure.converter.StringToPeriodConverter;
  * @author markus@malkusch.de
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
  */
-@EnableAspectJAutoProxy
-@EnableSpringConfigured
 @EntityScan(basePackageClasses = { WebApplication.class, Jsr310JpaConverters.class })
 @Configuration
 public class WebApplicationConfiguration {
@@ -40,7 +35,7 @@ public class WebApplicationConfiguration {
      * @author markus@malkusch.de
      * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
      */
-    @EnableAsync(mode = AdviceMode.ASPECTJ)
+    @EnableAsync
     @Configuration
     @EnableScheduling
     public static class AsyncConfiguration {
