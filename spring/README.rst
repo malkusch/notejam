@@ -4,7 +4,7 @@ Notejam: Spring
 
 Notejam application implemented using `Spring <http://projects.spring.io/spring-framework/>`_ framework.
 
-Spring version: 4.2.3
+Spring version: 4.2.4
 
 The full stack is:
 
@@ -66,15 +66,6 @@ Compile and launch the application:
     $ mvn spring-boot:run
 
 Go to http://localhost:8080/ in your browser.
-
-~~~~~~~~~~~~
-Localization
-~~~~~~~~~~~~
-
-This application comes with support for the languages German and English. The locale is
-determined by the Accept-Language request header. If the header is not present the
-content will be served with the default locale of the JVM. The application will not
-start if the default locale is non of the supported languages.
 
 ---------
 Run tests

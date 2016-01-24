@@ -1,12 +1,9 @@
 package net.notejam.spring.infrastructure;
 
-import java.util.Locale;
 import java.util.concurrent.Executor;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.orm.jpa.EntityScan;
-import org.springframework.context.MessageSource;
-import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +21,6 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 import net.notejam.spring.WebApplication;
 import net.notejam.spring.infrastructure.converter.StringToPeriodConverter;
-import net.notejam.spring.infrastructure.error.UnsupportedLocaleException;
 
 /**
  * Configures the Spring framework.
@@ -76,37 +72,11 @@ public class WebApplicationConfiguration {
     /**
      * Provides the locale resolver.
      *
-     * @param messageSource
-     *            The messageSource
      * @return The locale resolver.
-     * @throws UnsupportedLocaleException
-     *             The JVM's default locale does not support any of the
-     *             {@link MessageSource} languages.
      */
     @Bean
-    public LocaleResolver localeResolver(final MessageSource messageSource) throws UnsupportedLocaleException {
-	checkDefaultLocale(messageSource);
+    public LocaleResolver localeResolver() {
 	return new AcceptHeaderLocaleResolver();
-    }
-
-    /**
-     * Checks if the default locale is supported by the messageSource.
-     *
-     * @param messageSource
-     *            The message source
-     * @throws UnsupportedLocaleException
-     *             The JVM's default locale does not support any of the
-     *             {@link MessageSource} languages.
-     */
-    private static void checkDefaultLocale(final MessageSource messageSource) throws UnsupportedLocaleException {
-	try {
-	    messageSource.getMessage("bootstrap.locale", null, Locale.getDefault());
-
-	} catch (NoSuchMessageException e) {
-	    throw new UnsupportedLocaleException(String.format(
-		    "The JVM runs with the locale %s. This locale is not supported by this application. Please start the JVM with a supported locale, e.g. en.",
-		    Locale.getDefault()), e);
-	}
     }
 
     /**
