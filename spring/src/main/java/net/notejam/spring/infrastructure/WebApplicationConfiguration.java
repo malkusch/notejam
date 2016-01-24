@@ -27,7 +27,7 @@ import net.notejam.spring.infrastructure.converter.StringToPeriodConverter;
  */
 @EntityScan(basePackageClasses = { WebApplication.class, Jsr310JpaConverters.class })
 @Configuration
-public class WebApplicationConfiguration {
+class WebApplicationConfiguration {
 
     /**
      * Configures concurrency.
@@ -38,7 +38,7 @@ public class WebApplicationConfiguration {
     @EnableAsync
     @Configuration
     @EnableScheduling
-    public static class AsyncConfiguration {
+    static class AsyncConfiguration {
 
 	/**
 	 * The queue capacity.
@@ -52,7 +52,7 @@ public class WebApplicationConfiguration {
 	 * @return The mail executor.
 	 */
 	@Bean
-	public Executor mailExecutor() {
+	Executor mailExecutor() {
 	    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 	    executor.setCorePoolSize(1);
 	    executor.setMaxPoolSize(1);
@@ -70,7 +70,7 @@ public class WebApplicationConfiguration {
      * @return The locale resolver.
      */
     @Bean
-    public LocaleResolver localeResolver() {
+    LocaleResolver localeResolver() {
 	return new AcceptHeaderLocaleResolver();
     }
 
@@ -83,7 +83,7 @@ public class WebApplicationConfiguration {
      * @return The conversion service.
      */
     @Bean
-    public ConversionService conversionService() {
+    ConversionService conversionService() {
 	DefaultConversionService service = new DefaultConversionService();
 	service.addConverter(new StringToPeriodConverter());
 	return service;

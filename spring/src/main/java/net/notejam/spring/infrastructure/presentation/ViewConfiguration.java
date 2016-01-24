@@ -12,7 +12,7 @@ import net.notejam.spring.infrastructure.presentation.dialect.NotejamDialect;
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
  */
 @Configuration
-public class ViewConfiguration {
+class ViewConfiguration {
 
     /**
      * Provide the notejam view dialect.
@@ -20,8 +20,8 @@ public class ViewConfiguration {
      * @return notejam dialect
      */
     @Bean
-    public NotejamDialect notejamDialect() {
-        return new NotejamDialect();
+    NotejamDialect notejamDialect() {
+	return new NotejamDialect();
     }
 
 }
