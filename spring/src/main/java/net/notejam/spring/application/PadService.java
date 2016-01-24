@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import net.notejam.spring.application.security.AuthorizationService;
 import net.notejam.spring.domain.Name;
 import net.notejam.spring.domain.NoteRepository;
 import net.notejam.spring.domain.Pad;
 import net.notejam.spring.domain.PadRepository;
 import net.notejam.spring.domain.account.User;
-import net.notejam.spring.infrastructure.security.owner.PermitOwner;
 
 /**
  * An application service for pad use cases.
@@ -35,17 +35,27 @@ public class PadService {
     private final NoteRepository noteRepository;
 
     /**
+     * The authorization service.
+     */
+    private final AuthorizationService authorizationService;
+
+    /**
      * Builds the service with its dependencies.
      * 
      * @param padRepository
      *            pad repository
      * @param noteRepository
      *            note repository
+     * @param authorizationService
+     *            authorization service
      */
     @Autowired
-    PadService(final PadRepository padRepository, final NoteRepository noteRepository) {
+    PadService(final PadRepository padRepository, final NoteRepository noteRepository,
+	    final AuthorizationService authorizationService) {
+
 	this.padRepository = padRepository;
 	this.noteRepository = noteRepository;
+	this.authorizationService = authorizationService;
     }
 
     /**
@@ -55,7 +65,9 @@ public class PadService {
      *            pad id
      */
     public void deletePad(final int padId) {
-	Pad pad = findAuthorizedPad(padId);
+	Pad pad = padRepository.findOne(padId);
+	authorizationService.authorize(pad);
+	
 	noteRepository.deleteByPad(pad);
 	padRepository.delete(pad);
     }
@@ -69,7 +81,9 @@ public class PadService {
      *            new pad name
      */
     public void editPad(final int padId, final Name name) {
-	Pad pad = findAuthorizedPad(padId);
+	Pad pad = padRepository.findOne(padId);
+	authorizationService.authorize(pad);
+
 	pad.edit(name);
     }
 
@@ -81,10 +95,12 @@ public class PadService {
      * @param owner
      *            user who creates the new pad
      */
-    @PermitOwner
     public Pad createPad(final Name name, final User owner) {
 	Pad pad = new Pad(name, owner);
-	padRepository.save(pad);
+	authorizationService.authorize(pad);
+
+	pad = padRepository.save(pad);
+
 	return pad;
     }
 
@@ -95,21 +111,11 @@ public class PadService {
      *            pad
      * @return pad
      */
-    @PermitOwner
     public Pad showPad(final int padId) {
-	return findAuthorizedPad(padId);
+	Pad pad = padRepository.findOne(padId);
+	authorizationService.authorize(pad);
+
+	return pad;
     }
 
-    /**
-     * Finds a pad from the repository and checks the authorization.
-     *
-     * @param padId
-     *            pad id
-     * @return pad
-     */
-    @PermitOwner
-    private Pad findAuthorizedPad(final int padId) {
-	return padRepository.findOne(padId);
-    }
-    
 }

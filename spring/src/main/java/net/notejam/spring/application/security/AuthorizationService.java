@@ -55,7 +55,7 @@ public class AuthorizationService {
      * @throws AccessDeniedException
      *             if entity is not owned by the authenticated user.
      */
-    public void authorize(final Optional<Owned> owned) {
+    public void authorize(final Optional<? extends Owned> owned) {
 	owned.ifPresent((Owned o) -> authorize(o.getOwner()));
     }
 

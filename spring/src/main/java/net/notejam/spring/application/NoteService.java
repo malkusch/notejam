@@ -10,13 +10,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import net.notejam.spring.application.security.AuthorizationService;
 import net.notejam.spring.domain.Name;
 import net.notejam.spring.domain.Note;
 import net.notejam.spring.domain.NoteRepository;
 import net.notejam.spring.domain.Pad;
 import net.notejam.spring.domain.PadRepository;
 import net.notejam.spring.domain.account.User;
-import net.notejam.spring.infrastructure.security.owner.PermitOwner;
 
 /**
  * An application service for note use cases.
@@ -40,17 +40,27 @@ public class NoteService {
     private final PadRepository padRepository;
 
     /**
+     * The authorization service.
+     */
+    private final AuthorizationService authorizationService;
+
+    /**
      * Builds the service with its dependencies.
      * 
      * @param repository
      *            note repository
      * @param padRepository
      *            pad repository
+     * @param authorizationService
+     *            authorization service
      */
     @Autowired
-    NoteService(final NoteRepository repository, final PadRepository padRepository) {
+    NoteService(final NoteRepository repository, final PadRepository padRepository,
+	    final AuthorizationService authorizationService) {
+
 	this.repository = repository;
 	this.padRepository = padRepository;
+	this.authorizationService = authorizationService;
     }
 
     /**
@@ -60,9 +70,11 @@ public class NoteService {
      *            note id
      * @return note
      */
-    @PermitOwner
     public Optional<Note> showNote(final int noteId) {
-	return Optional.ofNullable(findAuthorizedNote(noteId));
+	Note note = repository.findOne(noteId);
+	authorizationService.authorize(note);
+	
+	return Optional.ofNullable(note);
     }
 
     /**
@@ -73,6 +85,8 @@ public class NoteService {
      * @return notes
      */
     public Page<Note> browseNotes(final User owner, final Pageable pageable) {
+	authorizationService.authorize(owner);
+
 	return repository.findByOwner(owner, pageable);
     }
 
@@ -85,7 +99,9 @@ public class NoteService {
      *            paging parameters
      * @return notes
      */
-    public Page<Note> browseNotes(@PermitOwner final Pad pad, final Pageable pageable) {
+    public Page<Note> browseNotes(final Pad pad, final Pageable pageable) {
+	authorizationService.authorize(pad);
+
 	return repository.findByPad(pad, pageable);
     }
 
@@ -104,8 +120,12 @@ public class NoteService {
      *            text
      */
     public void editNote(final int noteId, final Name name, final Optional<Integer> padId, final String text) {
-	Note note = findAuthorizedNote(noteId);
-	Optional<Pad> pad = findAuthorizedPad(padId);
+	Note note = repository.findOne(noteId);
+	authorizationService.authorize(note);
+	
+	Optional<Pad> pad = findPad(padId);
+	authorizationService.authorize(pad);
+
 	note.edit(name, pad, text);
     }
 
@@ -116,7 +136,9 @@ public class NoteService {
      *            note id
      */
     public void deleteNote(final int noteId) {
-	Note note = findAuthorizedNote(noteId);
+	Note note = repository.findOne(noteId);
+	authorizationService.authorize(note);
+
 	repository.delete(note);
     }
 
@@ -132,37 +154,25 @@ public class NoteService {
      * @param text
      *            text
      */
-    @PermitOwner
     public Note writeNote(final Name name, final User owner, final Optional<Integer> padId, final String text) {
-	Optional<Pad> pad = findAuthorizedPad(padId);
-	Note note = new Note(name, owner, pad, text);
-	
-	note = repository.save(note);
+	Optional<Pad> pad = findPad(padId);
+	authorizationService.authorize(pad);
 
+	Note note = new Note(name, owner, pad, text);
+	authorizationService.authorize(note);
+
+	note = repository.save(note);
 	return note;
     }
 
     /**
-     * Finds a note from the repository and checks the authorization.
-     *
-     * @param noteId
-     *            note id
-     * @return note
-     */
-    @PermitOwner
-    private Note findAuthorizedNote(final int noteId) {
-	return repository.findOne(noteId);
-    }
-
-    /**
-     * Finds a pad from the repository and checks the authorization.
+     * Finds a pad from the repository.
      *
      * @param padId
      *            pad id
      * @return pad
      */
-    @PermitOwner
-    private Optional<Pad> findAuthorizedPad(final Optional<Integer> padId) {
+    private Optional<Pad> findPad(final Optional<Integer> padId) {
 	return padId.map((Integer id) -> padRepository.findOne(id));
     }
 
