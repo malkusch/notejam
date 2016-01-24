@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import net.notejam.spring.domain.account.ChangePasswordService;
 import net.notejam.spring.domain.account.EmailAddress;
 import net.notejam.spring.domain.account.recovery.InvalidTokenException;
-import net.notejam.spring.domain.account.recovery.PasswordRecoveryFinishService;
 import net.notejam.spring.domain.account.recovery.PasswordRecoveryStartService;
 import net.notejam.spring.domain.account.recovery.RecoveryTokenRepository;
 
@@ -34,9 +34,9 @@ public class RecoveryService {
     private final PasswordRecoveryStartService startRecoveryService;
 
     /**
-     * The password recovery finish service.
+     * The password change password service.
      */
-    private final PasswordRecoveryFinishService finishRecoveryService;
+    private final ChangePasswordService changePasswordService;
 
     /**
      * The token repository.
@@ -55,16 +55,16 @@ public class RecoveryService {
      *            password recovery start service
      * @param tokenRepository
      *            password recovery token repository
-     * @param finishRecoveryService
-     *            password recovery finish service
+     * @param changePasswordService
+     *            password change password service
      */
     @Autowired
     RecoveryService(final PasswordRecoveryStartService startRecoveryService,
-	    final RecoveryTokenRepository tokenRepository, final PasswordRecoveryFinishService finishRecoveryService) {
+	    final RecoveryTokenRepository tokenRepository, final ChangePasswordService changePasswordService) {
 
 	this.startRecoveryService = startRecoveryService;
 	this.tokenRepository = tokenRepository;
-	this.finishRecoveryService = finishRecoveryService;
+	this.changePasswordService = changePasswordService;
     }
 
     /**
@@ -93,7 +93,7 @@ public class RecoveryService {
      *             The token was not valid
      */
     public String finishPasswordRecovery(final int tokenId, final String token) throws InvalidTokenException {
-	return finishRecoveryService.finishPasswordRecovery(tokenId, token);
+	return changePasswordService.changePassword(tokenId, token);
     }
 
     /**
