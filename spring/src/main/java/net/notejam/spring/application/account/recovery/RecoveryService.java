@@ -14,9 +14,13 @@ import org.springframework.stereotype.Service;
 
 import net.notejam.spring.domain.account.ChangePasswordService;
 import net.notejam.spring.domain.account.EmailAddress;
-import net.notejam.spring.domain.account.recovery.InvalidTokenException;
-import net.notejam.spring.domain.account.recovery.PasswordRecoveryStartService;
-import net.notejam.spring.domain.account.recovery.RecoveryTokenRepository;
+import net.notejam.spring.domain.account.recovery.InvalidPasswordRecoveryProcessException;
+import net.notejam.spring.domain.account.recovery.PasswordRecoveryProcess;
+import net.notejam.spring.domain.account.recovery.PasswordRecoveryProcessFactory;
+import net.notejam.spring.domain.account.recovery.PasswordRecoveryProcessRepository;
+import net.notejam.spring.domain.account.recovery.PasswordRecoveryToken;
+import net.notejam.spring.presentation.URITemplates;
+import net.notejam.spring.presentation.mail.PasswordRecoveryMailer;
 
 /**
  * The password recovery service.
@@ -29,9 +33,9 @@ import net.notejam.spring.domain.account.recovery.RecoveryTokenRepository;
 public class RecoveryService {
 
     /**
-     * The password recovery start service.
+     * The password recovery process factory.
      */
-    private final PasswordRecoveryStartService startRecoveryService;
+    final PasswordRecoveryProcessFactory processFactory;
 
     /**
      * The password change password service.
@@ -41,7 +45,12 @@ public class RecoveryService {
     /**
      * The token repository.
      */
-    private final RecoveryTokenRepository tokenRepository;
+    private final PasswordRecoveryProcessRepository tokenRepository;
+
+    /**
+     * The mailer.
+     */
+    final PasswordRecoveryMailer mailer;
 
     /**
      * The logger.
@@ -51,20 +60,24 @@ public class RecoveryService {
     /**
      * Builds the service with its dependencies.
      * 
-     * @param startRecoveryService
-     *            password recovery start service
+     * @param processFactory
+     *            password recovery process factory
      * @param tokenRepository
      *            password recovery token repository
      * @param changePasswordService
      *            password change password service
+     * @param mailer
+     *            password recovery mailer
      */
     @Autowired
-    RecoveryService(final PasswordRecoveryStartService startRecoveryService,
-	    final RecoveryTokenRepository tokenRepository, final ChangePasswordService changePasswordService) {
+    RecoveryService(final PasswordRecoveryProcessFactory processFactory,
+	    final PasswordRecoveryProcessRepository tokenRepository, final ChangePasswordService changePasswordService,
+	    final PasswordRecoveryMailer mailer) {
 
-	this.startRecoveryService = startRecoveryService;
+	this.processFactory = processFactory;
 	this.tokenRepository = tokenRepository;
 	this.changePasswordService = changePasswordService;
+	this.mailer = mailer;
     }
 
     /**
@@ -78,22 +91,31 @@ public class RecoveryService {
      *            locale in which the process should happen
      */
     public void startPasswordRecovery(final EmailAddress emailAddress, final URI baseUri, final Locale locale) {
-	startRecoveryService.startPasswordRecovery(emailAddress, baseUri, locale);
+	try {
+	    PasswordRecoveryProcess process = processFactory.buildProcess(emailAddress);
+	    URI uri = URITemplates.buildPasswordRecoveryURI(process, baseUri);
+	    mailer.sendRecoveryMail(emailAddress, uri, locale);
+
+	} catch (IllegalArgumentException e) {
+	    LOGGER.info("Cancel password recovery for non existing user {}", emailAddress);
+	}
     }
 
     /**
-     * Recovers the password in exchange for a valid token.
+     * Changes the password of a user to a new generated password.
      *
-     * @param tokenId
-     *            The token id
+     * @param processId
+     *            password recovery process id
      * @param token
-     *            The token string
-     * @return The new password
-     * @throws InvalidTokenException
+     *            password recovery token
+     * @return The new generated password
+     * @throws InvalidPasswordRecoveryProcessException
      *             The token was not valid
      */
-    public String finishPasswordRecovery(final int tokenId, final String token) throws InvalidTokenException {
-	return changePasswordService.changePassword(tokenId, token);
+    public String changePassword(final int processId, final PasswordRecoveryToken token)
+	    throws InvalidPasswordRecoveryProcessException {
+
+	return changePasswordService.changePassword(processId, token);
     }
 
     /**

@@ -20,7 +20,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import net.notejam.spring.application.account.recovery.RecoveryService;
 import net.notejam.spring.domain.account.EmailAddress;
-import net.notejam.spring.domain.account.recovery.InvalidTokenException;
+import net.notejam.spring.domain.account.recovery.InvalidPasswordRecoveryProcessException;
+import net.notejam.spring.domain.account.recovery.PasswordRecoveryToken;
 import net.notejam.spring.presentation.URITemplates;
 
 /**
@@ -64,8 +65,7 @@ final class RecoveryController {
     /**
      * Starts the recovery process.
      *
-     * This will create a token and send an email to finalize the process with
-     * the token.
+     * This will send an email to finalize the process.
      *
      * @param forgetPassword
      *            command from the view
@@ -91,25 +91,25 @@ final class RecoveryController {
 
 	return String.format("redirect:%s?success", URITemplates.FORGOT_PASSWORD);
     }
-    
+
     /**
-     * Shows the password.
+     * Changes the password to a generated new one and shows it to the user.
      *
      * @param id
-     *            The token id
+     *            process id
      * @param token
-     *            The token
+     *            token
      * @param password
-     *            The generated password.
-     * @return The view
-     * @throws InvalidTokenException
+     *            generated password for the model
+     * @return view name
+     * @throws InvalidPasswordRecoveryProcessException
      *             The token did not match.
      */
     @RequestMapping(URITemplates.RECOVER_PASSWORD)
-    String finishPasswordRecovery(@PathVariable("id") final int id, @PathVariable("token") final String token,
-	    @ModelAttribute("password") final StringBuilder password) throws InvalidTokenException {
+    String changePassword(@PathVariable("id") final int id, @PathVariable("token") final String token,
+	    @ModelAttribute("password") final StringBuilder password) throws InvalidPasswordRecoveryProcessException {
 
-	password.append(recoveryService.finishPasswordRecovery(id, token));
+	password.append(recoveryService.changePassword(id, new PasswordRecoveryToken(token)));
 	return "user/reveal-password";
     }
 
@@ -118,7 +118,7 @@ final class RecoveryController {
      *
      * @return The view.
      */
-    @ExceptionHandler(InvalidTokenException.class)
+    @ExceptionHandler(InvalidPasswordRecoveryProcessException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     String handleInvalidToken() {
 	return "error";

@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.springframework.web.util.UriComponentsBuilder;
 
-import net.notejam.spring.domain.account.recovery.RecoveryToken;
+import net.notejam.spring.domain.account.recovery.PasswordRecoveryProcess;
 
 /**
  * URI templates.
@@ -155,18 +155,18 @@ public interface URITemplates {
     /**
      * Builds the fully qualified URI for recovering the password.
      *
-     * @param token
+     * @param process
      *            password recovery token
      * @param baseUri
      *            base URI to build a fully qualified URI
      * @return password recovery URI
      */
-    static URI buildPasswordRecoveryURI(final RecoveryToken token, final URI baseUri) {
+    static URI buildPasswordRecoveryURI(final PasswordRecoveryProcess process, final URI baseUri) {
 	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(baseUri);
 
 	Map<String, String> uriVariables = new HashMap<>();
-	uriVariables.put("id", token.getId().toString());
-	uriVariables.put("token", token.getToken());
+	uriVariables.put("id", process.getId().toString());
+	uriVariables.put("token", process.token().toString());
 
 	return uriBuilder.replacePath(RECOVER_PASSWORD).buildAndExpand(uriVariables).toUri();
     }

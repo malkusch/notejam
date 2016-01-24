@@ -3,9 +3,11 @@ package net.notejam.spring.domain.account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import net.notejam.spring.domain.account.recovery.InvalidTokenException;
-import net.notejam.spring.domain.account.recovery.RecoveryToken;
-import net.notejam.spring.domain.account.recovery.RecoveryTokenRepository;
+import net.notejam.spring.domain.account.recovery.InvalidPasswordRecoveryProcessException;
+import net.notejam.spring.domain.account.recovery.PasswordRecoveryProcess;
+import net.notejam.spring.domain.account.recovery.PasswordRecoveryProcessRepository;
+import net.notejam.spring.domain.account.recovery.PasswordRecoveryToken;
+import net.notejam.spring.domain.account.security.EncodedPassword;
 import net.notejam.spring.domain.account.security.PasswordEncodingService;
 import net.notejam.spring.domain.account.security.PlainTextPassword;
 import net.notejam.spring.infrastructure.security.RandomStringGenerator;
@@ -20,9 +22,9 @@ import net.notejam.spring.infrastructure.security.RandomStringGenerator;
 public class ChangePasswordService {
 
     /**
-     * The token repository.
+     * The recovery process repository.
      */
-    private final RecoveryTokenRepository tokenRepository;
+    private final PasswordRecoveryProcessRepository processRepository;
 
     /**
      * The password generator.
@@ -39,17 +41,17 @@ public class ChangePasswordService {
      * 
      * @param encodingService
      *            password encoding service
-     * @param tokenTepository
-     *            token repository
+     * @param processRepository
+     *            recovery process repository
      * @param passwordGenerator
      *            password generator
      */
     @Autowired
-    ChangePasswordService(final PasswordEncodingService encodingService, final RecoveryTokenRepository tokenTepository,
-	    final RandomStringGenerator passwordGenerator) {
+    ChangePasswordService(final PasswordEncodingService encodingService,
+	    final PasswordRecoveryProcessRepository processRepository, final RandomStringGenerator passwordGenerator) {
 
 	this.encodingService = encodingService;
-	this.tokenRepository = tokenTepository;
+	this.processRepository = processRepository;
 	this.passwordGenerator = passwordGenerator;
     }
 
@@ -79,35 +81,39 @@ public class ChangePasswordService {
     }
 
     /**
-     * Changes the password of a user to a generated password in exchange for a
-     * valid token.
+     * Changes the password of a user to a generated password.
+     * 
+     * This change needs a valid {@link PasswordRecoveryProcess}.
      *
-     * @param tokenId
-     *            token id
+     * @param processId
+     *            password recovery process id
      * @param token
-     *            token
+     *            password recovery token
      * @return new generated plain text password
-     * @throws InvalidTokenException
-     *             if the token was not valid
+     * @throws InvalidPasswordRecoveryProcessException
+     *             if the password recovery process was not valid
      */
-    public String changePassword(final int tokenId, final String token) throws InvalidTokenException {
-	RecoveryToken recoveryToken = tokenRepository.findOne(tokenId);
+    public String changePassword(final int processId, final PasswordRecoveryToken token)
+	    throws InvalidPasswordRecoveryProcessException {
 
-	if (recoveryToken == null) {
-	    throw new InvalidTokenException("Token id is invalid.");
+	PasswordRecoveryProcess recoveryProcess = processRepository.findOne(processId);
+
+	if (recoveryProcess == null) {
+	    throw new InvalidPasswordRecoveryProcessException("Process id is invalid.");
 	}
-	if (recoveryToken.isExpired()) {
-	    throw new InvalidTokenException("Token is expired.");
+	if (recoveryProcess.isExpired()) {
+	    throw new InvalidPasswordRecoveryProcessException("Process is expired.");
 	}
-	if (!recoveryToken.getToken().equals(token)) {
-	    throw new InvalidTokenException("Token doesn't match.");
+	if (!recoveryProcess.token().equals(token)) {
+	    throw new InvalidPasswordRecoveryProcessException("Token doesn't match.");
 	}
 
 	String password = passwordGenerator.generatePassword();
-	User user = recoveryToken.getUser();
+	User user = recoveryProcess.user();
+	EncodedPassword encodedPassword = encodingService.encode(new PlainTextPassword(password));
 
-	user.changePassword(encodingService.encode(new PlainTextPassword(password)));
-	tokenRepository.delete(recoveryToken);
+	user.changePassword(encodedPassword);
+	processRepository.delete(recoveryProcess);
 
 	return password;
     }

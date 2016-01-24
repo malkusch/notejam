@@ -11,13 +11,13 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 import net.notejam.spring.domain.account.User;
 
 /**
- * The token to authorize a password recovery request.
+ * A password recovery process.
  *
  * @author markus@malkusch.de
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
  */
 @Entity
-public final class RecoveryToken extends AbstractPersistable<Integer> {
+public final class PasswordRecoveryProcess extends AbstractPersistable<Integer> {
 
     private static final long serialVersionUID = 5923083445165411558L;
 
@@ -32,7 +32,7 @@ public final class RecoveryToken extends AbstractPersistable<Integer> {
      * The token.
      */
     @NotNull
-    private final String token;
+    private final PasswordRecoveryToken token;
 
     /**
      * The expiration date.
@@ -50,7 +50,7 @@ public final class RecoveryToken extends AbstractPersistable<Integer> {
      * @param expiration
      *            expiration date
      */
-    RecoveryToken(final String token, final User user, final Instant expiration) {
+    PasswordRecoveryProcess(final PasswordRecoveryToken token, final User user, final Instant expiration) {
 	assertValid(token, user, expiration);
 	
 	this.token = token;
@@ -68,12 +68,9 @@ public final class RecoveryToken extends AbstractPersistable<Integer> {
      * @param expiration
      *            expiration date
      */
-    private static void assertValid(final String token, final User user, final Instant expiration) {
+    private static void assertValid(final PasswordRecoveryToken token, final User user, final Instant expiration) {
 	if (token == null) {
 	    throw new NullPointerException();
-	}
-	if (token.isEmpty()) {
-	    throw new IllegalArgumentException("The password recovery token must not be empty.");
 	}
 	if (user == null) {
 	    throw new NullPointerException();
@@ -87,9 +84,9 @@ public final class RecoveryToken extends AbstractPersistable<Integer> {
     }
 
     /**
-     * Returns if this token is expired.
+     * Returns if this process is expired.
      *
-     * @return true if this token is expired
+     * @return true if this process is expired
      */
     public boolean isExpired() {
 	return Instant.now().isAfter(expiration);
@@ -100,7 +97,7 @@ public final class RecoveryToken extends AbstractPersistable<Integer> {
      *
      * @return The user.
      */
-    public User getUser() {
+    public User user() {
 	return user;
     }
 
@@ -109,7 +106,7 @@ public final class RecoveryToken extends AbstractPersistable<Integer> {
      *
      * @return The token.
      */
-    public String getToken() {
+    public PasswordRecoveryToken token() {
 	return token;
     }
 
@@ -118,7 +115,7 @@ public final class RecoveryToken extends AbstractPersistable<Integer> {
      *
      * This is required by the persistence framework.
      */
-    RecoveryToken() {
+    PasswordRecoveryProcess() {
 	expiration = null;
 	user = null;
 	token = null;

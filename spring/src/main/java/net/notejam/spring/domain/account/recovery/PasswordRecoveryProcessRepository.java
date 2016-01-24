@@ -5,15 +5,15 @@ import java.time.Instant;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * The token repository.
+ * A recovery process repository.
  *
  * @author markus@malkusch.de
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
  */
-public interface RecoveryTokenRepository extends JpaRepository<RecoveryToken, Integer> {
+public interface PasswordRecoveryProcessRepository extends JpaRepository<PasswordRecoveryProcess, Integer> {
 
     /**
-     * Deletes all tokens which are expired.
+     * Deletes all processes which are expired.
      *
      * @param date
      *            The time
