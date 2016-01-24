@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import net.notejam.spring.domain.account.EmailAddress;
+import net.notejam.spring.domain.account.EmailAddressExistsException;
 import net.notejam.spring.domain.account.User;
 import net.notejam.spring.domain.account.UserFactory;
 import net.notejam.spring.domain.account.UserRepository;
@@ -87,8 +88,13 @@ public class UserService {
      * @param password
      *            plain text password
      * @return signed up user
+     * @throws EmailAddressExistsException
+     *             if an user with the given email address was already
+     *             registered
      */
-    public User signUp(final EmailAddress emailAddress, final PlainTextPassword password) {
+    public User signUp(final EmailAddress emailAddress, final PlainTextPassword password)
+	    throws EmailAddressExistsException {
+
 	User user = factory.signUp(emailAddress, password);
 	return user;
     }

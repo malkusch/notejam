@@ -48,8 +48,16 @@ public final class UserFactory {
      * @param password
      *            plain text password
      * @return new signed up user
+     * @throws EmailAddressExistsException
+     *             if an user with the given email address was already registered
      */
-    public User signUp(final EmailAddress emailAddress, final PlainTextPassword password) {
+    public User signUp(final EmailAddress emailAddress, final PlainTextPassword password)
+	    throws EmailAddressExistsException {
+
+	if (repository.findOneByEmailAddress(emailAddress).isPresent()) {
+	    throw new EmailAddressExistsException();
+	}
+
 	EncodedPassword encodedPassword = encodingService.encode(password);
 
 	User user = new User(emailAddress, encodedPassword);

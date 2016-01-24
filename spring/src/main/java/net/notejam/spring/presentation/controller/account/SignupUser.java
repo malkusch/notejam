@@ -8,7 +8,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import de.malkusch.validation.constraints.EqualProperties;
 import net.notejam.spring.presentation.constraints.Password;
-import net.notejam.spring.presentation.constraints.UniqueEmail;
 
 /**
  * A command for signing up a user.
@@ -26,7 +25,6 @@ public interface SignupUser {
      */
     @NotEmpty
     @Email
-    @UniqueEmail
     @Size(max = 75)
     String getEmailAddress();
 

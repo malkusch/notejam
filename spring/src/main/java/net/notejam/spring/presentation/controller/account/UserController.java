@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import net.notejam.spring.application.account.UserService;
 import net.notejam.spring.domain.account.EmailAddress;
+import net.notejam.spring.domain.account.EmailAddressExistsException;
 import net.notejam.spring.domain.account.security.PlainTextPassword;
 import net.notejam.spring.presentation.URITemplates;
 
@@ -99,9 +100,14 @@ final class UserController {
 	    return showSignUpForm(signupUser);
 	}
 
-	userService.signUp(new EmailAddress(signupUser.getEmailAddress()), new PlainTextPassword(signupUser.getPassword()));
-
-	return String.format("redirect:%s?signup", URITemplates.SIGNIN);
+	try {
+	    userService.signUp(new EmailAddress(signupUser.getEmailAddress()), new PlainTextPassword(signupUser.getPassword()));
+	    return String.format("redirect:%s?signup", URITemplates.SIGNIN);
+	    
+	} catch (EmailAddressExistsException e) {
+	    errors.rejectValue("emailAddress", "UniqueEmail");
+	    return showSignUpForm(signupUser);
+	}
     }
 
 }

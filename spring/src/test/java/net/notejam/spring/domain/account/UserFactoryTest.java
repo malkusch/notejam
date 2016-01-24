@@ -28,9 +28,10 @@ public class UserFactoryTest {
 
     /**
      * Tests signUp().
+     * @throws EmailAddressExistsException 
      */
     @Test
-    public void testSignUp() {
+    public void testSignUp() throws EmailAddressExistsException {
 	EmailAddress emailAddress = new EmailAddress("test@example.net");
 	
 	factory.signUp(emailAddress, new PlainTextPassword("password"));

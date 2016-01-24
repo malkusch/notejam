@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import net.notejam.spring.domain.account.EmailAddress;
+import net.notejam.spring.domain.account.EmailAddressExistsException;
 import net.notejam.spring.domain.account.User;
 import net.notejam.spring.domain.account.UserFactory;
 import net.notejam.spring.domain.account.UserRepository;
@@ -55,7 +56,7 @@ public class SignedUpUserProvider extends ExternalResource {
     public static final String PASSWORD = "password";
 
     @Override
-    protected void before() {
+    protected void before() throws EmailAddressExistsException {
         user = factory.signUp(new EmailAddress(EMAIL), new PlainTextPassword(PASSWORD));
         other = factory.signUp(new EmailAddress("another@example.org"), new PlainTextPassword(PASSWORD));
     }
