@@ -72,7 +72,7 @@ public final class Name implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof Name) {
             Name other = (Name) obj;
             return name.equals(other.name);

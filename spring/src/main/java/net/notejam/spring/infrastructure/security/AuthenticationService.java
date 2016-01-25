@@ -23,35 +23,36 @@ public class AuthenticationService {
     private final SecurityContextHolderStrategy contextHolder;
 
     /**
-     * Builds the service with the default spring security holder context strategy.
+     * Builds the service with the default spring security holder context
+     * strategy.
      */
     AuthenticationService() {
-	this(SecurityContextHolder.getContextHolderStrategy());
+        this(SecurityContextHolder.getContextHolderStrategy());
     }
 
     /**
-     * Builds the service
-     * 
+     * Builds the service.
+     *
      * @param contextHolder
      *            security context holder strategy
      */
     AuthenticationService(final SecurityContextHolderStrategy contextHolder) {
-	this.contextHolder = contextHolder;
+        this.contextHolder = contextHolder;
     }
 
     /**
      * Returns the currently authenticated user.
-     * 
+     *
      * @return authenticated user
      * @throws AccessDeniedException
      *             if currently no user is authenticated
      */
     public User authenticatedUser() {
-	Authentication authentication = contextHolder.getContext().getAuthentication();
-	if (authentication == null) {
-	    throw new AccessDeniedException("No user is authenticated.");
-	}
-	return ((AuthenticatedUser) authentication.getPrincipal()).getUser();
+        Authentication authentication = contextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new AccessDeniedException("No user is authenticated.");
+        }
+        return ((AuthenticatedUser) authentication.getPrincipal()).getUser();
     }
 
 }

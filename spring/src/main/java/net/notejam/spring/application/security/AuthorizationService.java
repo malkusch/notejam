@@ -26,13 +26,13 @@ public class AuthorizationService {
 
     /**
      * Builds the service
-     * 
+     *
      * @param authenticationService
      *            authentication service
      */
     @Autowired
     AuthorizationService(final AuthenticationService authenticationService) {
-	this.authenticationService = authenticationService;
+        this.authenticationService = authenticationService;
     }
 
     /**
@@ -44,7 +44,7 @@ public class AuthorizationService {
      *             if entity is not owned by the authenticated user.
      */
     public void authorize(final Owned owned) {
-	authorize(Optional.ofNullable(owned));
+        authorize(Optional.ofNullable(owned));
     }
 
     /**
@@ -56,7 +56,7 @@ public class AuthorizationService {
      *             if entity is not owned by the authenticated user.
      */
     public void authorize(final Optional<? extends Owned> owned) {
-	owned.ifPresent((Owned o) -> authorize(o.getOwner()));
+        owned.ifPresent((Owned o) -> authorize(o.getOwner()));
     }
 
     /**
@@ -68,12 +68,12 @@ public class AuthorizationService {
      *             if user is not the currently authenticated user.
      */
     public void authorize(final User user) {
-	if (user == null) {
-	    return;
-	}
-	if (!authenticationService.authenticatedUser().equals(user)) {
-	    throw new AccessDeniedException("Authenticated user is not authorized to access the entity.");
-	}
+        if (user == null) {
+            return;
+        }
+        if (!authenticationService.authenticatedUser().equals(user)) {
+            throw new AccessDeniedException("Authenticated user is not authorized to access the entity.");
+        }
     }
 
 }

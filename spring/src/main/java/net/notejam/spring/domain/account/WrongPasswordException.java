@@ -1,7 +1,7 @@
 package net.notejam.spring.domain.account;
 
 /**
- * The password did not match
+ * The password did not match.
  *
  * @author markus@malkusch.de
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>

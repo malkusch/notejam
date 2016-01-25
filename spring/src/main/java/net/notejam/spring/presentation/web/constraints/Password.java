@@ -37,11 +37,11 @@ public @interface Password {
     /**
      * The validation groups.
      */
-    Class<?>[]groups() default {};
+    Class<?>[] groups() default {};
 
     /**
      * This constraint doesn't support any payload.
      */
-    Class<? extends Payload>[]payload() default {};
+    Class<? extends Payload>[] payload() default {};
 
 }

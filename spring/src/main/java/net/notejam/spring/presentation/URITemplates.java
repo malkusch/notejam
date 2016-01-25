@@ -23,82 +23,82 @@ public interface URITemplates {
     /**
      * The sign up path.
      */
-    final String SIGNUP = "/signup";
+    String SIGNUP = "/signup";
 
     /**
      * The sign in path.
      */
-    final String SIGNIN = "/signin";
+    String SIGNIN = "/signin";
 
     /**
      * The sign out path.
      */
-    final String SIGNOUT = "/signout";
+    String SIGNOUT = "/signout";
 
     /**
      * The settings path.
      */
-    final String SETTINGS = "/settings";
+    String SETTINGS = "/settings";
 
     /**
      * The forgot password path.
      */
-    final String FORGOT_PASSWORD = "/forgot-password";
+    String FORGOT_PASSWORD = "/forgot-password";
 
     /**
      * The recover password path.
      */
-    final String RECOVER_PASSWORD = "/recover-password/{id}/{token}";
+    String RECOVER_PASSWORD = "/recover-password/{id}/{token}";
 
     /**
      * The create pad path.
      */
-    final String CREATE_PAD = "/pads/create";
+    String CREATE_PAD = "/pads/create";
 
     /**
      * The edit pad path.
      */
-    final String EDIT_PAD = "/pads/{id}/edit";
+    String EDIT_PAD = "/pads/{id}/edit";
 
     /**
      * The view pad path.
      */
-    final String VIEW_PAD = "/pads/{id}";
+    String VIEW_PAD = "/pads/{id}";
 
     /**
      * The delete pad path.
      */
-    final String DELETE_PAD = "/pads/{id}/delete";
+    String DELETE_PAD = "/pads/{id}/delete";
 
     /**
      * The create note path.
      */
-    final String CREATE_NOTE = "/notes/create";
+    String CREATE_NOTE = "/notes/create";
 
     /**
      * The create note with a preselected pad path.
      */
-    final String CREATE_NOTE_FOR_PAD = CREATE_NOTE + "?pad={id}";
+    String CREATE_NOTE_FOR_PAD = CREATE_NOTE + "?pad={id}";
 
     /**
      * The edit note path.
      */
-    final String EDIT_NOTE = "/notes/{id}/edit";
+    String EDIT_NOTE = "/notes/{id}/edit";
 
     /**
      * The view note path.
      */
-    final String VIEW_NOTE = "/notes/{id}";
+    String VIEW_NOTE = "/notes/{id}";
 
     /**
      * The delete note path.
      */
-    final String DELETE_NOTE = "/notes/{id}/delete";
+    String DELETE_NOTE = "/notes/{id}/delete";
 
     /**
      * The view all notes path. This is the default path.
      */
-    final String VIEW_ALL_NOTES = "/";
+    String VIEW_ALL_NOTES = "/";
 
     /**
      * Builds the URI for the created pad.
@@ -108,11 +108,11 @@ public interface URITemplates {
      * @return URI
      */
     static URI buildCreatedPadURI(final int id) {
-	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(VIEW_PAD);
-	uriBuilder.queryParam("createdSuccessfully");
-	return uriBuilder.buildAndExpand(id).toUri();
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(VIEW_PAD);
+        uriBuilder.queryParam("createdSuccessfully");
+        return uriBuilder.buildAndExpand(id).toUri();
     }
-    
+
     /**
      * Builds the URI for the created note.
      *
@@ -121,11 +121,11 @@ public interface URITemplates {
      * @return URI
      */
     static URI buildCreatedNoteURI(final int id) {
-	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(VIEW_NOTE);
-	uriBuilder.queryParam("successful");
-	return uriBuilder.buildAndExpand(id).toUri();
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(VIEW_NOTE);
+        uriBuilder.queryParam("successful");
+        return uriBuilder.buildAndExpand(id).toUri();
     }
-    
+
     /**
      * Builds the URI for the edited note.
      *
@@ -134,9 +134,9 @@ public interface URITemplates {
      * @return URI
      */
     static URI buildEditedNoteURI(final int id) {
-	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(VIEW_NOTE);
-	uriBuilder.queryParam("successful");
-	return uriBuilder.buildAndExpand(id).toUri();
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(VIEW_NOTE);
+        uriBuilder.queryParam("successful");
+        return uriBuilder.buildAndExpand(id).toUri();
     }
 
     /**
@@ -147,9 +147,9 @@ public interface URITemplates {
      * @return URI
      */
     static URI buildEditedPadURI(final int id) {
-	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(EDIT_PAD);
-	uriBuilder.queryParam("success");
-	return uriBuilder.buildAndExpand(id).toUri();
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(EDIT_PAD);
+        uriBuilder.queryParam("success");
+        return uriBuilder.buildAndExpand(id).toUri();
     }
 
     /**
@@ -162,13 +162,13 @@ public interface URITemplates {
      * @return password recovery URI
      */
     static URI buildPasswordRecoveryURI(final PasswordRecoveryProcess process, final URI baseUri) {
-	UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(baseUri);
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(baseUri);
 
-	Map<String, String> uriVariables = new HashMap<>();
-	uriVariables.put("id", process.getId().toString());
-	uriVariables.put("token", process.token().toString());
+        Map<String, String> uriVariables = new HashMap<>();
+        uriVariables.put("id", process.getId().toString());
+        uriVariables.put("token", process.token().toString());
 
-	return uriBuilder.replacePath(RECOVER_PASSWORD).buildAndExpand(uriVariables).toUri();
+        return uriBuilder.replacePath(RECOVER_PASSWORD).buildAndExpand(uriVariables).toUri();
     }
 
 }

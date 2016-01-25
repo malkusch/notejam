@@ -29,12 +29,12 @@ public final class EncodedPassword implements Serializable {
      *            encoded password, not null
      */
     EncodedPassword(final String encodedPassword) {
-	if (encodedPassword == null) {
-	    throw new NullPointerException();
-	}
-	if (encodedPassword.isEmpty()) {
-	    throw new IllegalArgumentException("The encoded password must not be empty!");
-	}
+        if (encodedPassword == null) {
+            throw new NullPointerException();
+        }
+        if (encodedPassword.isEmpty()) {
+            throw new IllegalArgumentException("The encoded password must not be empty!");
+        }
 
         this.password = encodedPassword;
     }
@@ -55,7 +55,7 @@ public final class EncodedPassword implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof EncodedPassword) {
             EncodedPassword other = (EncodedPassword) obj;
             return password.equals(other.password);

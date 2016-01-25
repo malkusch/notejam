@@ -21,8 +21,8 @@ import net.notejam.spring.domain.account.security.Owned;
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
  */
 @Entity
-@Table(indexes = @Index(columnList = "created") )
-public final class Pad extends AbstractPersistable<Integer>implements Owned {
+@Table(indexes = @Index(columnList = "created"))
+public final class Pad extends AbstractPersistable<Integer> implements Owned {
 
     private static final long serialVersionUID = -1186217744141902841L;
 
@@ -60,7 +60,7 @@ public final class Pad extends AbstractPersistable<Integer>implements Owned {
         if (owner == null) {
             throw new NullPointerException();
         }
-        
+
         this.created = Instant.now();
         this.owner = owner;
         this.name = name;
@@ -85,7 +85,7 @@ public final class Pad extends AbstractPersistable<Integer>implements Owned {
     }
 
     /**
-     * Edits the pad
+     * Edits the pad.
      *
      * @param name
      *            edited name. Null is not allowed.
@@ -101,7 +101,7 @@ public final class Pad extends AbstractPersistable<Integer>implements Owned {
     public User getOwner() {
         return owner;
     }
-    
+
     /**
      * Builds an incomplete pad for the persistence framework.
      */

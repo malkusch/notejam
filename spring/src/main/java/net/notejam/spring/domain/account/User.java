@@ -34,22 +34,22 @@ public final class User extends AbstractPersistable<Integer> {
 
     /**
      * Builds a new user.
-     * 
+     *
      * @param emailAddress
      *            email address
      * @param password
      *            encoded password
      */
     User(final EmailAddress emailAddress, final EncodedPassword password) {
-	if (emailAddress == null) {
-	    throw new NullPointerException();
-	}
-	if (password == null) {
-	    throw new NullPointerException();
-	}
+        if (emailAddress == null) {
+            throw new NullPointerException();
+        }
+        if (password == null) {
+            throw new NullPointerException();
+        }
 
-	this.emailAddress = emailAddress;
-	this.password = password;
+        this.emailAddress = emailAddress;
+        this.password = password;
     }
 
     /**
@@ -58,7 +58,7 @@ public final class User extends AbstractPersistable<Integer> {
      * @return The encoded password.
      */
     public EncodedPassword getPassword() {
-	return password;
+        return password;
     }
 
     /**
@@ -67,28 +67,28 @@ public final class User extends AbstractPersistable<Integer> {
      * @return The email address.
      */
     public EmailAddress getEmailAddress() {
-	return emailAddress;
+        return emailAddress;
     }
 
     /**
-     * Changes the password
-     * 
+     * Changes the password.
+     *
      * @param password
      *            new encoded password
      */
     void changePassword(final EncodedPassword password) {
-	if (password == null) {
-	    throw new NullPointerException();
-	}
-	this.password = password;
+        if (password == null) {
+            throw new NullPointerException();
+        }
+        this.password = password;
     }
 
     /**
      * Builds an incomplete note for the persistence framework.
      */
     User() {
-	emailAddress = null;
-	password = null;
+        emailAddress = null;
+        password = null;
     }
 
 }

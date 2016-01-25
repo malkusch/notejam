@@ -48,7 +48,7 @@ public class UserService {
 
     /**
      * Builds the service with its dependencies.
-     * 
+     *
      * @param changePasswordService
      *            change password service
      * @param factory
@@ -60,12 +60,12 @@ public class UserService {
      */
     @Autowired
     UserService(final ChangePasswordService changePasswordService, final UserFactory factory,
-	    final AuthenticationService authenticationService, final UserRepository repository) {
+            final AuthenticationService authenticationService, final UserRepository repository) {
 
-	this.changePasswordService = changePasswordService;
-	this.factory = factory;
-	this.authenticationService = authenticationService;
-	this.repository = repository;
+        this.changePasswordService = changePasswordService;
+        this.factory = factory;
+        this.authenticationService = authenticationService;
+        this.repository = repository;
     }
 
     /**
@@ -80,11 +80,11 @@ public class UserService {
      */
     @PreAuthorize("isAuthenticated()")
     public void changePassword(final PlainTextPassword oldPassword, final PlainTextPassword newPassword)
-	    throws WrongPasswordException {
+            throws WrongPasswordException {
 
-	User user = authenticationService.authenticatedUser();
-	changePasswordService.changePassword(user, oldPassword, newPassword);
-	repository.save(user);
+        User user = authenticationService.authenticatedUser();
+        changePasswordService.changePassword(user, oldPassword, newPassword);
+        repository.save(user);
     }
 
     /**
@@ -100,10 +100,10 @@ public class UserService {
      *             registered
      */
     public User signUp(final EmailAddress emailAddress, final PlainTextPassword password)
-	    throws EmailAddressExistsException {
+            throws EmailAddressExistsException {
 
-	User user = factory.signUp(emailAddress, password);
-	return user;
+        User user = factory.signUp(emailAddress, password);
+        return user;
     }
 
 }

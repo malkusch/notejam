@@ -44,7 +44,8 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     /**
      * Sets the password encoder.
      *
-     * @param auth The authentication manager builder.
+     * @param auth
+     *            The authentication manager builder.
      */
     @Autowired
     void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {

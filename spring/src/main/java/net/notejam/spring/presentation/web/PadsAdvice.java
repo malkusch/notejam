@@ -49,13 +49,13 @@ class PadsAdvice {
 
     /**
      * Builds the advice with its dependencies.
-     * 
+     *
      * @param repository
      *            pad repository
      */
     @Autowired
     PadsAdvice(final PadRepository repository) {
-	this.repository = repository;
+        this.repository = repository;
     }
 
     /**
@@ -69,7 +69,7 @@ class PadsAdvice {
      */
     @ModelAttribute("pads")
     public List<Pad> pads(@AuthenticationPrincipal final AuthenticatedUser authenticatedUser) {
-	return repository.findByOwner(authenticatedUser.getUser());
+        return repository.findByOwner(authenticatedUser.getUser());
     }
 
 }

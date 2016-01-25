@@ -40,13 +40,13 @@ final class RecoveryController {
 
     /**
      * Builds the controller with its dependencies.
-     * 
+     *
      * @param recoveryService
      *            recovery service
      */
     @Autowired
     RecoveryController(final RecoveryService recoveryService) {
-	this.recoveryService = recoveryService;
+        this.recoveryService = recoveryService;
     }
 
     /**
@@ -59,7 +59,7 @@ final class RecoveryController {
      */
     @RequestMapping(method = RequestMethod.GET, path = URITemplates.FORGOT_PASSWORD)
     String showForm(final ForgetPassword forgotPassword) {
-	return "user/forgot-password";
+        return "user/forgot-password";
     }
 
     /**
@@ -75,21 +75,21 @@ final class RecoveryController {
      *            HTTP request
      * @param locale
      *            locale
-     * 
+     *
      * @return view name
      */
     @RequestMapping(method = RequestMethod.POST, path = URITemplates.FORGOT_PASSWORD)
     String startPasswordRecovery(@Valid final ForgetPassword forgetPassword, final Errors errors,
-	    final HttpServletRequest request, final Locale locale) throws URISyntaxException {
+            final HttpServletRequest request, final Locale locale) throws URISyntaxException {
 
-	if (errors.hasErrors()) {
-	    return showForm(forgetPassword);
-	}
+        if (errors.hasErrors()) {
+            return showForm(forgetPassword);
+        }
 
-	URI baseUri = new URI(request.getRequestURL().toString());
-	recoveryService.startPasswordRecovery(new EmailAddress(forgetPassword.getEmailAddress()), baseUri, locale);
+        URI baseUri = new URI(request.getRequestURL().toString());
+        recoveryService.startPasswordRecovery(new EmailAddress(forgetPassword.getEmailAddress()), baseUri, locale);
 
-	return String.format("redirect:%s?success", URITemplates.FORGOT_PASSWORD);
+        return String.format("redirect:%s?success", URITemplates.FORGOT_PASSWORD);
     }
 
     /**
@@ -107,10 +107,10 @@ final class RecoveryController {
      */
     @RequestMapping(URITemplates.RECOVER_PASSWORD)
     String changePassword(@PathVariable("id") final int id, @PathVariable("token") final String token,
-	    @ModelAttribute("password") final StringBuilder password) throws InvalidPasswordRecoveryProcessException {
+            @ModelAttribute("password") final StringBuilder password) throws InvalidPasswordRecoveryProcessException {
 
-	password.append(recoveryService.changePassword(id, new PasswordRecoveryToken(token)));
-	return "user/reveal-password";
+        password.append(recoveryService.changePassword(id, new PasswordRecoveryToken(token)));
+        return "user/reveal-password";
     }
 
     /**
@@ -121,7 +121,7 @@ final class RecoveryController {
     @ExceptionHandler(InvalidPasswordRecoveryProcessException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     String handleInvalidToken() {
-	return "error";
+        return "error";
     }
 
 }

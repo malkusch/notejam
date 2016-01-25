@@ -34,13 +34,13 @@ final class EditPadController {
 
     /**
      * Builds the controller with its dependencies.
-     * 
+     *
      * @param service
      *            pad service
      */
     @Autowired
     EditPadController(final PadService service) {
-	this.service = service;
+        this.service = service;
     }
 
     /**
@@ -52,7 +52,7 @@ final class EditPadController {
      */
     @ModelAttribute
     Pad pad(@PathVariable("id") final int id) {
-	return service.showPad(id);
+        return service.showPad(id);
     }
 
     /**
@@ -67,8 +67,8 @@ final class EditPadController {
      */
     @RequestMapping(method = RequestMethod.GET)
     String showCreatePadForm(final Pad pad, final EditPad editPad) {
-	editPad.setName(pad.getName().toString());
-	return "pad/edit";
+        editPad.setName(pad.getName().toString());
+        return "pad/edit";
     }
 
     /**
@@ -85,13 +85,13 @@ final class EditPadController {
     @RequestMapping(method = RequestMethod.POST)
     String editPad(final Pad pad, @Valid final EditPad editPad, final Errors errors) {
 
-	if (errors.hasErrors()) {
-	    return showCreatePadForm(pad, editPad);
-	}
+        if (errors.hasErrors()) {
+            return showCreatePadForm(pad, editPad);
+        }
 
-	service.editPad(pad.getId(), new Name(editPad.getName()));
+        service.editPad(pad.getId(), new Name(editPad.getName()));
 
-	return String.format("redirect:%s", URITemplates.buildEditedPadURI(pad.getId()));
+        return String.format("redirect:%s", URITemplates.buildEditedPadURI(pad.getId()));
     }
 
 }

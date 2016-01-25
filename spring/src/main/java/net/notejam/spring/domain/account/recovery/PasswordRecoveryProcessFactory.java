@@ -43,7 +43,7 @@ public final class PasswordRecoveryProcessFactory {
 
     /**
      * Builds this factory with its dependencies.
-     * 
+     *
      * @param generator
      *            random string generator
      * @param userRepository
@@ -55,18 +55,18 @@ public final class PasswordRecoveryProcessFactory {
      */
     @Autowired
     PasswordRecoveryProcessFactory(final RandomStringGenerator generator, final UserRepository userRepository,
-	    @Value("${recovery.lifetime}") final Period tokenLifetime,
-	    final PasswordRecoveryProcessRepository processRepository) {
+            @Value("${recovery.lifetime}") final Period tokenLifetime,
+            final PasswordRecoveryProcessRepository processRepository) {
 
-	this.generator = generator;
-	this.userRepository = userRepository;
-	this.processLifetime = tokenLifetime;
-	this.processRepository = processRepository;
+        this.generator = generator;
+        this.userRepository = userRepository;
+        this.processLifetime = tokenLifetime;
+        this.processRepository = processRepository;
     }
 
     /**
      * Builds a new password recovery process for a user.
-     * 
+     *
      * @param emailAddress
      *            email address of the user
      * @return password recovery process
@@ -75,16 +75,16 @@ public final class PasswordRecoveryProcessFactory {
      */
     public PasswordRecoveryProcess buildProcess(final EmailAddress emailAddress) {
 
-	User user = userRepository.findOneByEmailAddress(emailAddress)
-		.orElseThrow(() -> new IllegalArgumentException());
+        User user = userRepository.findOneByEmailAddress(emailAddress)
+                .orElseThrow(() -> new IllegalArgumentException());
 
-	Instant expiration = Instant.now().plus(processLifetime);
-	PasswordRecoveryToken token = new PasswordRecoveryToken(generator.generateAlphaNumericString());
+        Instant expiration = Instant.now().plus(processLifetime);
+        PasswordRecoveryToken token = new PasswordRecoveryToken(generator.generateAlphaNumericString());
 
-	PasswordRecoveryProcess process = new PasswordRecoveryProcess(token, user, expiration);
-	process = processRepository.save(process);
+        PasswordRecoveryProcess process = new PasswordRecoveryProcess(token, user, expiration);
+        process = processRepository.save(process);
 
-	return process;
+        return process;
     }
 
 }

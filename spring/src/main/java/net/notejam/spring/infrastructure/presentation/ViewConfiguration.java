@@ -21,7 +21,7 @@ class ViewConfiguration {
      */
     @Bean
     NotejamDialect notejamDialect() {
-	return new NotejamDialect();
+        return new NotejamDialect();
     }
 
 }

@@ -65,7 +65,7 @@ public final class Note extends AbstractPersistable<Integer> implements Owned {
 
     /**
      * Writes a new note.
-     * 
+     *
      * @param name
      *            name
      * @param owner
@@ -76,18 +76,18 @@ public final class Note extends AbstractPersistable<Integer> implements Owned {
      *            text
      */
     public Note(final Name name, final User owner, final Optional<Pad> pad, final String text) {
-	assertValid(name, owner, pad, text);
+        assertValid(name, owner, pad, text);
 
-	this.name = name;
-	this.owner = owner;
-	this.pad = pad.orElse(null);
-	this.text = text;
-	this.updated = Instant.now();
+        this.name = name;
+        this.owner = owner;
+        this.pad = pad.orElse(null);
+        this.text = text;
+        this.updated = Instant.now();
     }
 
     /**
      * Edits this note.
-     * 
+     *
      * @param name
      *            edited name, not null
      * @param pad
@@ -96,17 +96,17 @@ public final class Note extends AbstractPersistable<Integer> implements Owned {
      *            edited text, not null
      */
     public void edit(final Name name, final Optional<Pad> pad, final String text) {
-	assertValid(name, owner, pad, text);
+        assertValid(name, owner, pad, text);
 
-	this.name = name;
-	this.pad = pad.orElse(null);
-	this.text = text;
-	this.updated = Instant.now();
+        this.name = name;
+        this.pad = pad.orElse(null);
+        this.text = text;
+        this.updated = Instant.now();
     }
 
     /**
      * Check the invariants.
-     * 
+     *
      * @param name
      *            name
      * @param owner
@@ -116,25 +116,24 @@ public final class Note extends AbstractPersistable<Integer> implements Owned {
      * @param text
      *            text
      */
-    private static void assertValid(final Name name, final User owner, final Optional<Pad> pad,
-	    final String text) {
-	if (name == null) {
-	    throw new NullPointerException();
-	}
-	if (pad == null) {
-	    throw new NullPointerException();
-	}
-	if (owner == null) {
-	    throw new NullPointerException();
-	}
-	if (text == null) {
-	    throw new NullPointerException();
-	}
-	pad.ifPresent((Pad p) -> {
-	    if (!owner.equals(p.getOwner())) {
-		throw new IllegalArgumentException("The pad's owner must be identical with the note's owner.");
-	    }
-	});
+    private static void assertValid(final Name name, final User owner, final Optional<Pad> pad, final String text) {
+        if (name == null) {
+            throw new NullPointerException();
+        }
+        if (pad == null) {
+            throw new NullPointerException();
+        }
+        if (owner == null) {
+            throw new NullPointerException();
+        }
+        if (text == null) {
+            throw new NullPointerException();
+        }
+        pad.ifPresent((Pad p) -> {
+            if (!owner.equals(p.getOwner())) {
+                throw new IllegalArgumentException("The pad's owner must be identical with the note's owner.");
+            }
+        });
     }
 
     /**
@@ -143,7 +142,7 @@ public final class Note extends AbstractPersistable<Integer> implements Owned {
      * @return The name.
      */
     public Name getName() {
-	return name;
+        return name;
     }
 
     /**
@@ -152,7 +151,7 @@ public final class Note extends AbstractPersistable<Integer> implements Owned {
      * @return The text
      */
     public String getText() {
-	return text;
+        return text;
     }
 
     /**
@@ -161,12 +160,12 @@ public final class Note extends AbstractPersistable<Integer> implements Owned {
      * @return The pad or null.
      */
     public Optional<Pad> getPad() {
-	return Optional.ofNullable(pad);
+        return Optional.ofNullable(pad);
     }
 
     @Override
     public User getOwner() {
-	return owner;
+        return owner;
     }
 
     /**
@@ -175,9 +174,9 @@ public final class Note extends AbstractPersistable<Integer> implements Owned {
      * @return The time.
      */
     public Instant getUpdated() {
-	return updated;
+        return updated;
     }
-    
+
     /**
      * Builds an incomplete note for the persistence framework.
      */

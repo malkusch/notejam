@@ -44,7 +44,7 @@ final class EditNoteController {
      */
     @Autowired
     EditNoteController(final NoteService service) {
-	this.service = service;
+        this.service = service;
     }
 
     /**
@@ -56,8 +56,8 @@ final class EditNoteController {
      */
     @ModelAttribute
     Name name(@PathVariable("id") final int id) {
-	Note note = service.showNote(id).orElseThrow(() -> new ResourceNotFoundException());
-	return note.getName();
+        Note note = service.showNote(id).orElseThrow(() -> new ResourceNotFoundException());
+        return note.getName();
     }
 
     /**
@@ -73,11 +73,11 @@ final class EditNoteController {
     @RequestMapping(method = RequestMethod.GET)
     String showEditNoteForm(@PathVariable("id") final Note note, final NoteCommand editNote) {
 
-	editNote.setName(note.getName().toString());
-	editNote.setText(note.getText());
-	editNote.setPadId(note.getPad().flatMap((Pad pad) -> Optional.of(pad.getId())));
+        editNote.setName(note.getName().toString());
+        editNote.setText(note.getText());
+        editNote.setPadId(note.getPad().flatMap((Pad pad) -> Optional.of(pad.getId())));
 
-	return "note/edit";
+        return "note/edit";
     }
 
     /**
@@ -89,19 +89,19 @@ final class EditNoteController {
      *            note command
      * @param errors
      *            validation errors
-     * 
+     *
      * @return The view
      */
     @RequestMapping(method = RequestMethod.POST)
     String editNote(@PathVariable("id") final int id, @Valid final NoteCommand editNote, final Errors errors) {
 
-	if (errors.hasErrors()) {
-	    return "note/edit";
-	}
+        if (errors.hasErrors()) {
+            return "note/edit";
+        }
 
-	service.editNote(id, new Name(editNote.getName()), editNote.getPadId(), editNote.getText());
+        service.editNote(id, new Name(editNote.getName()), editNote.getPadId(), editNote.getText());
 
-	return String.format("redirect:%s", URITemplates.buildEditedNoteURI(id));
+        return String.format("redirect:%s", URITemplates.buildEditedNoteURI(id));
     }
 
 }

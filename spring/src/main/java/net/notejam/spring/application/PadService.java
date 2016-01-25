@@ -41,7 +41,7 @@ public class PadService {
 
     /**
      * Builds the service with its dependencies.
-     * 
+     *
      * @param padRepository
      *            pad repository
      * @param noteRepository
@@ -51,25 +51,25 @@ public class PadService {
      */
     @Autowired
     PadService(final PadRepository padRepository, final NoteRepository noteRepository,
-	    final AuthorizationService authorizationService) {
+            final AuthorizationService authorizationService) {
 
-	this.padRepository = padRepository;
-	this.noteRepository = noteRepository;
-	this.authorizationService = authorizationService;
+        this.padRepository = padRepository;
+        this.noteRepository = noteRepository;
+        this.authorizationService = authorizationService;
     }
 
     /**
      * Deletes a pad and its notes.
      *
-     * @param pad
+     * @param padId
      *            pad id
      */
     public void deletePad(final int padId) {
-	Pad pad = padRepository.findOne(padId);
-	authorizationService.authorize(pad);
-	
-	noteRepository.deleteByPad(pad);
-	padRepository.delete(pad);
+        Pad pad = padRepository.findOne(padId);
+        authorizationService.authorize(pad);
+
+        noteRepository.deleteByPad(pad);
+        padRepository.delete(pad);
     }
 
     /**
@@ -81,10 +81,10 @@ public class PadService {
      *            new pad name
      */
     public void editPad(final int padId, final Name name) {
-	Pad pad = padRepository.findOne(padId);
-	authorizationService.authorize(pad);
+        Pad pad = padRepository.findOne(padId);
+        authorizationService.authorize(pad);
 
-	pad.edit(name);
+        pad.edit(name);
     }
 
     /**
@@ -94,28 +94,29 @@ public class PadService {
      *            name for the new pad
      * @param owner
      *            user who creates the new pad
+     * @return created pad
      */
     public Pad createPad(final Name name, final User owner) {
-	Pad pad = new Pad(name, owner);
-	authorizationService.authorize(pad);
+        Pad pad = new Pad(name, owner);
+        authorizationService.authorize(pad);
 
-	pad = padRepository.save(pad);
+        pad = padRepository.save(pad);
 
-	return pad;
+        return pad;
     }
 
     /**
      * Returns a pad for presentation.
-     * 
+     *
      * @param padId
      *            pad
      * @return pad
      */
     public Pad showPad(final int padId) {
-	Pad pad = padRepository.findOne(padId);
-	authorizationService.authorize(pad);
+        Pad pad = padRepository.findOne(padId);
+        authorizationService.authorize(pad);
 
-	return pad;
+        return pad;
     }
 
 }

@@ -38,7 +38,7 @@ public class ChangePasswordService {
 
     /**
      * Builds this service.
-     * 
+     *
      * @param encodingService
      *            password encoding service
      * @param processRepository
@@ -48,19 +48,19 @@ public class ChangePasswordService {
      */
     @Autowired
     ChangePasswordService(final PasswordEncodingService encodingService,
-	    final PasswordRecoveryProcessRepository processRepository, final RandomStringGenerator passwordGenerator) {
+            final PasswordRecoveryProcessRepository processRepository, final RandomStringGenerator passwordGenerator) {
 
-	this.encodingService = encodingService;
-	this.processRepository = processRepository;
-	this.passwordGenerator = passwordGenerator;
+        this.encodingService = encodingService;
+        this.processRepository = processRepository;
+        this.passwordGenerator = passwordGenerator;
     }
 
     /**
      * Changes the password of a user.
-     * 
+     *
      * This method needs the current password to verify the authenticity of the
      * request.
-     * 
+     *
      * @param user
      *            user whose password will be changed
      * @param oldPassword
@@ -71,18 +71,18 @@ public class ChangePasswordService {
      *             if the current password does not match for the user
      */
     public void changePassword(final User user, final PlainTextPassword oldPassword,
-	    final PlainTextPassword newPassword) throws WrongPasswordException {
+            final PlainTextPassword newPassword) throws WrongPasswordException {
 
-	if (!encodingService.matches(oldPassword, user.getPassword())) {
-	    throw new WrongPasswordException();
-	}
+        if (!encodingService.matches(oldPassword, user.getPassword())) {
+            throw new WrongPasswordException();
+        }
 
-	user.changePassword(encodingService.encode(newPassword));
+        user.changePassword(encodingService.encode(newPassword));
     }
 
     /**
      * Changes the password of a user to a generated password.
-     * 
+     *
      * This change needs a valid {@link PasswordRecoveryProcess}.
      *
      * @param processId
@@ -94,29 +94,29 @@ public class ChangePasswordService {
      *             if the password recovery process was not valid
      */
     public String changePassword(final int processId, final PasswordRecoveryToken token)
-	    throws InvalidPasswordRecoveryProcessException {
+            throws InvalidPasswordRecoveryProcessException {
 
-	PasswordRecoveryProcess recoveryProcess = processRepository.findOne(processId);
+        PasswordRecoveryProcess recoveryProcess = processRepository.findOne(processId);
 
-	if (recoveryProcess == null) {
-	    throw new InvalidPasswordRecoveryProcessException("Process id is invalid.");
-	}
-	if (recoveryProcess.isExpired()) {
-	    throw new InvalidPasswordRecoveryProcessException("Process is expired.");
-	}
-	if (!recoveryProcess.token().equals(token)) {
-	    throw new InvalidPasswordRecoveryProcessException("Token doesn't match.");
-	}
+        if (recoveryProcess == null) {
+            throw new InvalidPasswordRecoveryProcessException("Process id is invalid.");
+        }
+        if (recoveryProcess.isExpired()) {
+            throw new InvalidPasswordRecoveryProcessException("Process is expired.");
+        }
+        if (!recoveryProcess.token().equals(token)) {
+            throw new InvalidPasswordRecoveryProcessException("Token doesn't match.");
+        }
 
-	String password = passwordGenerator.generatePassword();
-	EncodedPassword encodedPassword = encodingService.encode(new PlainTextPassword(password));
+        String password = passwordGenerator.generatePassword();
+        EncodedPassword encodedPassword = encodingService.encode(new PlainTextPassword(password));
 
-	User user = recoveryProcess.user();
-	user.changePassword(encodedPassword);
+        User user = recoveryProcess.user();
+        user.changePassword(encodedPassword);
 
-	processRepository.delete(recoveryProcess);
+        processRepository.delete(recoveryProcess);
 
-	return password;
+        return password;
     }
 
 }

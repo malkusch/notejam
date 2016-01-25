@@ -28,7 +28,7 @@ public final class UserFactory {
 
     /**
      * Builds the user factory and its dependencies.
-     * 
+     *
      * @param encodingService
      *            password encoding service
      * @param repository
@@ -36,8 +36,8 @@ public final class UserFactory {
      */
     @Autowired
     UserFactory(final PasswordEncodingService encodingService, final UserRepository repository) {
-	this.encodingService = encodingService;
-	this.repository = repository;
+        this.encodingService = encodingService;
+        this.repository = repository;
     }
 
     /**
@@ -49,21 +49,22 @@ public final class UserFactory {
      *            plain text password
      * @return new signed up user
      * @throws EmailAddressExistsException
-     *             if an user with the given email address was already registered
+     *             if an user with the given email address was already
+     *             registered
      */
     public User signUp(final EmailAddress emailAddress, final PlainTextPassword password)
-	    throws EmailAddressExistsException {
+            throws EmailAddressExistsException {
 
-	if (repository.findOneByEmailAddress(emailAddress).isPresent()) {
-	    throw new EmailAddressExistsException();
-	}
+        if (repository.findOneByEmailAddress(emailAddress).isPresent()) {
+            throw new EmailAddressExistsException();
+        }
 
-	EncodedPassword encodedPassword = encodingService.encode(password);
+        EncodedPassword encodedPassword = encodingService.encode(password);
 
-	User user = new User(emailAddress, encodedPassword);
-	user = repository.save(user);
+        User user = new User(emailAddress, encodedPassword);
+        user = repository.save(user);
 
-	return user;
+        return user;
     }
 
 }

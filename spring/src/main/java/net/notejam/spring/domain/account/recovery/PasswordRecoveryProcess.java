@@ -42,7 +42,7 @@ public final class PasswordRecoveryProcess extends AbstractPersistable<Integer> 
 
     /**
      * Builds a token.
-     * 
+     *
      * @param token
      *            token
      * @param user
@@ -51,16 +51,16 @@ public final class PasswordRecoveryProcess extends AbstractPersistable<Integer> 
      *            expiration date
      */
     PasswordRecoveryProcess(final PasswordRecoveryToken token, final User user, final Instant expiration) {
-	assertValid(token, user, expiration);
-	
-	this.token = token;
-	this.user = user;
-	this.expiration = expiration;
+        assertValid(token, user, expiration);
+
+        this.token = token;
+        this.user = user;
+        this.expiration = expiration;
     }
 
     /**
      * Checks the invariants.
-     * 
+     *
      * @param token
      *            token
      * @param user
@@ -69,18 +69,18 @@ public final class PasswordRecoveryProcess extends AbstractPersistable<Integer> 
      *            expiration date
      */
     private static void assertValid(final PasswordRecoveryToken token, final User user, final Instant expiration) {
-	if (token == null) {
-	    throw new NullPointerException();
-	}
-	if (user == null) {
-	    throw new NullPointerException();
-	}
-	if (expiration == null) {
-	    throw new NullPointerException();
-	}
-	if (expiration.isBefore(Instant.now())) {
-	    throw new IllegalArgumentException("The expiration date must be in the future.");
-	}
+        if (token == null) {
+            throw new NullPointerException();
+        }
+        if (user == null) {
+            throw new NullPointerException();
+        }
+        if (expiration == null) {
+            throw new NullPointerException();
+        }
+        if (expiration.isBefore(Instant.now())) {
+            throw new IllegalArgumentException("The expiration date must be in the future.");
+        }
     }
 
     /**
@@ -89,7 +89,7 @@ public final class PasswordRecoveryProcess extends AbstractPersistable<Integer> 
      * @return true if this process is expired
      */
     public boolean isExpired() {
-	return Instant.now().isAfter(expiration);
+        return Instant.now().isAfter(expiration);
     }
 
     /**
@@ -98,7 +98,7 @@ public final class PasswordRecoveryProcess extends AbstractPersistable<Integer> 
      * @return The user.
      */
     public User user() {
-	return user;
+        return user;
     }
 
     /**
@@ -107,7 +107,7 @@ public final class PasswordRecoveryProcess extends AbstractPersistable<Integer> 
      * @return The token.
      */
     public PasswordRecoveryToken token() {
-	return token;
+        return token;
     }
 
     /**
@@ -116,9 +116,9 @@ public final class PasswordRecoveryProcess extends AbstractPersistable<Integer> 
      * This is required by the persistence framework.
      */
     PasswordRecoveryProcess() {
-	expiration = null;
-	user = null;
-	token = null;
+        expiration = null;
+        user = null;
+        token = null;
     }
 
 }

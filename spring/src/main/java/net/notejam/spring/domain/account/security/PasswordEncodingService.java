@@ -26,7 +26,7 @@ public final class PasswordEncodingService {
      */
     @Autowired
     PasswordEncodingService(final PasswordEncoder encoder) {
-	this.encoder = encoder;
+        this.encoder = encoder;
     }
 
     /**
@@ -39,7 +39,7 @@ public final class PasswordEncodingService {
      * @return True if the passwords match
      */
     public boolean matches(final PlainTextPassword password, final EncodedPassword encodedPassword) {
-	return encoder.matches(password.text, encodedPassword.toString());
+        return encoder.matches(password.text, encodedPassword.toString());
     }
 
     /**
@@ -50,7 +50,7 @@ public final class PasswordEncodingService {
      * @return encoded password
      */
     public EncodedPassword encode(final PlainTextPassword password) {
-	return new EncodedPassword(encoder.encode(password.text));
+        return new EncodedPassword(encoder.encode(password.text));
     }
 
 }

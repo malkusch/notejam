@@ -41,8 +41,8 @@ final class NoteCommand {
     }
 
     /**
-     * Sets the name
-     * 
+     * Sets the name.
+     *
      * @param name
      *            note name
      */
@@ -52,7 +52,7 @@ final class NoteCommand {
 
     /**
      * Returns the text of a note.
-     * 
+     *
      * @return note text
      */
     @Size(max = 10000)
@@ -63,7 +63,7 @@ final class NoteCommand {
 
     /**
      * Sets the text.
-     * 
+     *
      * @param text
      *            note text
      */

@@ -46,7 +46,7 @@ public class NoteService {
 
     /**
      * Builds the service with its dependencies.
-     * 
+     *
      * @param repository
      *            note repository
      * @param padRepository
@@ -56,11 +56,11 @@ public class NoteService {
      */
     @Autowired
     NoteService(final NoteRepository repository, final PadRepository padRepository,
-	    final AuthorizationService authorizationService) {
+            final AuthorizationService authorizationService) {
 
-	this.repository = repository;
-	this.padRepository = padRepository;
-	this.authorizationService = authorizationService;
+        this.repository = repository;
+        this.padRepository = padRepository;
+        this.authorizationService = authorizationService;
     }
 
     /**
@@ -71,10 +71,10 @@ public class NoteService {
      * @return note
      */
     public Optional<Note> showNote(final int noteId) {
-	Note note = repository.findOne(noteId);
-	authorizationService.authorize(note);
-	
-	return Optional.ofNullable(note);
+        Note note = repository.findOne(noteId);
+        authorizationService.authorize(note);
+
+        return Optional.ofNullable(note);
     }
 
     /**
@@ -85,9 +85,9 @@ public class NoteService {
      * @return notes
      */
     public Page<Note> browseNotes(final User owner, final Pageable pageable) {
-	authorizationService.authorize(owner);
+        authorizationService.authorize(owner);
 
-	return repository.findByOwner(owner, pageable);
+        return repository.findByOwner(owner, pageable);
     }
 
     /**
@@ -100,9 +100,9 @@ public class NoteService {
      * @return notes
      */
     public Page<Note> browseNotes(final Pad pad, final Pageable pageable) {
-	authorizationService.authorize(pad);
+        authorizationService.authorize(pad);
 
-	return repository.findByPad(pad, pageable);
+        return repository.findByPad(pad, pageable);
     }
 
     /**
@@ -120,13 +120,13 @@ public class NoteService {
      *            text
      */
     public void editNote(final int noteId, final Name name, final Optional<Integer> padId, final String text) {
-	Note note = repository.findOne(noteId);
-	authorizationService.authorize(note);
-	
-	Optional<Pad> pad = findPad(padId);
-	authorizationService.authorize(pad);
+        Note note = repository.findOne(noteId);
+        authorizationService.authorize(note);
 
-	note.edit(name, pad, text);
+        Optional<Pad> pad = findPad(padId);
+        authorizationService.authorize(pad);
+
+        note.edit(name, pad, text);
     }
 
     /**
@@ -136,10 +136,10 @@ public class NoteService {
      *            note id
      */
     public void deleteNote(final int noteId) {
-	Note note = repository.findOne(noteId);
-	authorizationService.authorize(note);
+        Note note = repository.findOne(noteId);
+        authorizationService.authorize(note);
 
-	repository.delete(note);
+        repository.delete(note);
     }
 
     /**
@@ -155,14 +155,14 @@ public class NoteService {
      *            text
      */
     public Note writeNote(final Name name, final User owner, final Optional<Integer> padId, final String text) {
-	Optional<Pad> pad = findPad(padId);
-	authorizationService.authorize(pad);
+        Optional<Pad> pad = findPad(padId);
+        authorizationService.authorize(pad);
 
-	Note note = new Note(name, owner, pad, text);
-	authorizationService.authorize(note);
+        Note note = new Note(name, owner, pad, text);
+        authorizationService.authorize(note);
 
-	note = repository.save(note);
-	return note;
+        note = repository.save(note);
+        return note;
     }
 
     /**
@@ -173,7 +173,7 @@ public class NoteService {
      * @return pad
      */
     private Optional<Pad> findPad(final Optional<Integer> padId) {
-	return padId.map((Integer id) -> padRepository.findOne(id));
+        return padId.map((Integer id) -> padRepository.findOne(id));
     }
 
 }

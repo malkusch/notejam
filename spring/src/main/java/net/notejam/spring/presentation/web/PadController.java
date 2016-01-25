@@ -36,13 +36,13 @@ final class PadController {
 
     /**
      * Builds the controller with its dependencies.
-     * 
+     *
      * @param service
      *            pad service
      */
     @Autowired
     PadController(final PadService service) {
-	this.service = service;
+        this.service = service;
     }
 
     /**
@@ -54,7 +54,7 @@ final class PadController {
      */
     @RequestMapping(method = RequestMethod.GET, path = URITemplates.CREATE_PAD)
     String showCreatePad(final CreatePad createPad) {
-	return "pad/create";
+        return "pad/create";
     }
 
     /**
@@ -71,26 +71,31 @@ final class PadController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(method = RequestMethod.POST, path = URITemplates.CREATE_PAD)
     String createPad(@Valid final CreatePad createPad, final Errors errors,
-	    @AuthenticationPrincipal final AuthenticatedUser authenticatedUser) {
+            @AuthenticationPrincipal final AuthenticatedUser authenticatedUser) {
 
-	if (errors.hasErrors()) {
-	    return showCreatePad(createPad);
-	}
+        if (errors.hasErrors()) {
+            return showCreatePad(createPad);
+        }
 
-	Pad pad = service.createPad(new Name(createPad.getName()), authenticatedUser.getUser());
+        Pad pad = service.createPad(new Name(createPad.getName()), authenticatedUser.getUser());
 
-	return String.format("redirect:%s", URITemplates.buildCreatedPadURI(pad.getId()));
+        return String.format("redirect:%s", URITemplates.buildCreatedPadURI(pad.getId()));
     }
-    
+
     /**
      * Shows the confirmation for deleting a pad.
+     *
+     * @param id
+     *            pad id
+     * @param model
+     *            view model
      *
      * @return view name
      */
     @RequestMapping(method = RequestMethod.GET, path = URITemplates.DELETE_PAD)
     String showDeletePad(@PathVariable("id") final int id, final Model model) {
-	model.addAttribute(service.showPad(id));
-	return "pad/delete";
+        model.addAttribute(service.showPad(id));
+        return "pad/delete";
     }
 
     /**
@@ -102,8 +107,8 @@ final class PadController {
      */
     @RequestMapping(method = RequestMethod.POST, path = URITemplates.DELETE_PAD)
     String deletePad(@PathVariable("id") final int id) {
-	service.deletePad(id);
-	return String.format("redirect:%s?deleted", URITemplates.CREATE_PAD);
+        service.deletePad(id);
+        return String.format("redirect:%s?deleted", URITemplates.CREATE_PAD);
     }
 
 }

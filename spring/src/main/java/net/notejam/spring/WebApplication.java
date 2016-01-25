@@ -19,7 +19,7 @@ public class WebApplication {
      *            The commandline arguments.
      */
     public static void main(final String[] args) {
-	SpringApplication.run(WebApplication.class, args);
+        SpringApplication.run(WebApplication.class, args);
     }
 
 }

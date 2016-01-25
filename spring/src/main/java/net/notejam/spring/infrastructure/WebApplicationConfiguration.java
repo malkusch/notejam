@@ -40,27 +40,27 @@ class WebApplicationConfiguration {
     @EnableScheduling
     static class AsyncConfiguration {
 
-	/**
-	 * The queue capacity.
-	 */
-	@Value("${async.queueCapacity}")
-	private int queueCapacity;
+        /**
+         * The queue capacity.
+         */
+        @Value("${async.queueCapacity}")
+        private int queueCapacity;
 
-	/**
-	 * The mail sending thread.
-	 *
-	 * @return The mail executor.
-	 */
-	@Bean
-	Executor mailExecutor() {
-	    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-	    executor.setCorePoolSize(1);
-	    executor.setMaxPoolSize(1);
-	    executor.setQueueCapacity(queueCapacity);
-	    executor.setThreadPriority(Thread.MIN_PRIORITY);
-	    executor.initialize();
-	    return executor;
-	}
+        /**
+         * The mail sending thread.
+         *
+         * @return The mail executor.
+         */
+        @Bean
+        Executor mailExecutor() {
+            ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+            executor.setCorePoolSize(1);
+            executor.setMaxPoolSize(1);
+            executor.setQueueCapacity(queueCapacity);
+            executor.setThreadPriority(Thread.MIN_PRIORITY);
+            executor.initialize();
+            return executor;
+        }
 
     }
 
@@ -71,7 +71,7 @@ class WebApplicationConfiguration {
      */
     @Bean
     LocaleResolver localeResolver() {
-	return new AcceptHeaderLocaleResolver();
+        return new AcceptHeaderLocaleResolver();
     }
 
     /**
@@ -84,9 +84,9 @@ class WebApplicationConfiguration {
      */
     @Bean
     ConversionService conversionService() {
-	DefaultConversionService service = new DefaultConversionService();
-	service.addConverter(new StringToPeriodConverter());
-	return service;
+        DefaultConversionService service = new DefaultConversionService();
+        service.addConverter(new StringToPeriodConverter());
+        return service;
     }
 
 }

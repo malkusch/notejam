@@ -50,7 +50,7 @@ final class NoteController {
      */
     @Autowired
     NoteController(final NoteService noteService) {
-	this.service = noteService;
+        this.service = noteService;
     }
 
     /**
@@ -60,13 +60,13 @@ final class NoteController {
      */
     @RequestMapping(URITemplates.VIEW_NOTE)
     String viewNote(@PathVariable("id") final int id, final Model model) {
-	
-	Note note = service.showNote(id).orElseThrow(() -> new ResourceNotFoundException());
-	model.addAttribute(note);
-	
-	return "note/view";
+
+        Note note = service.showNote(id).orElseThrow(() -> new ResourceNotFoundException());
+        model.addAttribute(note);
+
+        return "note/view";
     }
-    
+
     /**
      * Shows the confirmation for deleting a note.
      *
@@ -75,10 +75,10 @@ final class NoteController {
     @RequestMapping(method = RequestMethod.GET, path = URITemplates.DELETE_NOTE)
     String confirmDeleteNote(@PathVariable("id") final int id, final Model model) {
 
-	Note note = service.showNote(id).orElseThrow(() -> new ResourceNotFoundException());
-	model.addAttribute(note);
+        Note note = service.showNote(id).orElseThrow(() -> new ResourceNotFoundException());
+        model.addAttribute(note);
 
-	return "note/delete";
+        return "note/delete";
     }
 
     /**
@@ -90,8 +90,8 @@ final class NoteController {
      */
     @RequestMapping(method = RequestMethod.POST, path = URITemplates.DELETE_NOTE)
     String deleteNote(@PathVariable("id") final int id) {
-	service.deleteNote(id);
-	return String.format("redirect:%s?deleted", URITemplates.CREATE_NOTE);
+        service.deleteNote(id);
+        return String.format("redirect:%s?deleted", URITemplates.CREATE_NOTE);
     }
 
     /**
@@ -106,11 +106,11 @@ final class NoteController {
      */
     @RequestMapping(method = RequestMethod.GET, path = URITemplates.CREATE_NOTE)
     String showWriteNoteForm(final NoteCommand createNote,
-	    @RequestParam(value = "pad", required = false) final Optional<Integer> padId) {
+            @RequestParam(value = "pad", required = false) final Optional<Integer> padId) {
 
-	createNote.setPadId(padId);
+        createNote.setPadId(padId);
 
-	return "note/create";
+        return "note/create";
     }
 
     /**
@@ -126,16 +126,16 @@ final class NoteController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(method = RequestMethod.POST, path = URITemplates.CREATE_NOTE)
     String writeNote(@AuthenticationPrincipal final AuthenticatedUser authenticatedUser,
-	    final @Valid NoteCommand createNote, final Errors errors) {
+            final @Valid NoteCommand createNote, final Errors errors) {
 
-	if (errors.hasErrors()) {
-	    return showWriteNoteForm(createNote, createNote.getPadId());
-	}
+        if (errors.hasErrors()) {
+            return showWriteNoteForm(createNote, createNote.getPadId());
+        }
 
-	Note note = service.writeNote(new Name(createNote.getName()), authenticatedUser.getUser(),
-		createNote.getPadId(), createNote.getText());
+        Note note = service.writeNote(new Name(createNote.getName()), authenticatedUser.getUser(),
+                createNote.getPadId(), createNote.getText());
 
-	return String.format("redirect:%s", URITemplates.buildCreatedNoteURI(note.getId()));
+        return String.format("redirect:%s", URITemplates.buildCreatedNoteURI(note.getId()));
     }
 
     /**
@@ -147,18 +147,18 @@ final class NoteController {
      */
     @RequestMapping(URITemplates.VIEW_PAD)
     String browseNotes(@PathVariable("id") final Pad pad, @PageableDefault(10) final Pageable pageable,
-	    final Model model) {
+            final Model model) {
 
-	Page<Note> notes = service.browseNotes(pad, pageable);
-	model.addAttribute("notes", notes);
-	model.addAttribute(pad);
+        Page<Note> notes = service.browseNotes(pad, pageable);
+        model.addAttribute("notes", notes);
+        model.addAttribute(pad);
 
-	return "notes";
+        return "notes";
     }
 
     /**
      * Shows all notes.
-     * 
+     *
      * @param authenticatedUser
      *            authenticated user
      * @param pageable
@@ -171,12 +171,12 @@ final class NoteController {
     @RequestMapping(URITemplates.VIEW_ALL_NOTES)
     @PreAuthorize("isAuthenticated()")
     String browseNotes(@AuthenticationPrincipal final AuthenticatedUser authenticatedUser,
-	    @PageableDefault(10) final Pageable pageable, final Model model) {
+            @PageableDefault(10) final Pageable pageable, final Model model) {
 
-	Page<Note> notes = service.browseNotes(authenticatedUser.getUser(), pageable);
-	model.addAttribute("notes", notes);
+        Page<Note> notes = service.browseNotes(authenticatedUser.getUser(), pageable);
+        model.addAttribute("notes", notes);
 
-	return "notes";
+        return "notes";
     }
 
 }

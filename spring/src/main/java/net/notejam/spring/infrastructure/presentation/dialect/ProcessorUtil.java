@@ -24,6 +24,8 @@ final class ProcessorUtil {
     /**
      * Returns the value from the attribute expression.
      *
+     * @param <T>
+     *            value type
      * @param arguments
      *            The arguments.
      * @param element

@@ -35,7 +35,7 @@ public class RecoveryService {
     /**
      * The password recovery process factory.
      */
-    final PasswordRecoveryProcessFactory processFactory;
+    private final PasswordRecoveryProcessFactory processFactory;
 
     /**
      * The password change password service.
@@ -50,7 +50,7 @@ public class RecoveryService {
     /**
      * The mailer.
      */
-    final PasswordRecoveryMailer mailer;
+    private final PasswordRecoveryMailer mailer;
 
     /**
      * The logger.
@@ -59,7 +59,7 @@ public class RecoveryService {
 
     /**
      * Builds the service with its dependencies.
-     * 
+     *
      * @param processFactory
      *            password recovery process factory
      * @param tokenRepository
@@ -71,18 +71,18 @@ public class RecoveryService {
      */
     @Autowired
     RecoveryService(final PasswordRecoveryProcessFactory processFactory,
-	    final PasswordRecoveryProcessRepository tokenRepository, final ChangePasswordService changePasswordService,
-	    final PasswordRecoveryMailer mailer) {
+            final PasswordRecoveryProcessRepository tokenRepository, final ChangePasswordService changePasswordService,
+            final PasswordRecoveryMailer mailer) {
 
-	this.processFactory = processFactory;
-	this.tokenRepository = tokenRepository;
-	this.changePasswordService = changePasswordService;
-	this.mailer = mailer;
+        this.processFactory = processFactory;
+        this.tokenRepository = tokenRepository;
+        this.changePasswordService = changePasswordService;
+        this.mailer = mailer;
     }
 
     /**
      * Starts the password recovery process.
-     * 
+     *
      * @param emailAddress
      *            Email address of the account
      * @param baseUri
@@ -91,14 +91,14 @@ public class RecoveryService {
      *            locale in which the process should happen
      */
     public void startPasswordRecovery(final EmailAddress emailAddress, final URI baseUri, final Locale locale) {
-	try {
-	    PasswordRecoveryProcess process = processFactory.buildProcess(emailAddress);
-	    URI uri = URITemplates.buildPasswordRecoveryURI(process, baseUri);
-	    mailer.sendRecoveryMail(emailAddress, uri, locale);
+        try {
+            PasswordRecoveryProcess process = processFactory.buildProcess(emailAddress);
+            URI uri = URITemplates.buildPasswordRecoveryURI(process, baseUri);
+            mailer.sendRecoveryMail(emailAddress, uri, locale);
 
-	} catch (IllegalArgumentException e) {
-	    LOGGER.info("Cancel password recovery for non existing user {}", emailAddress);
-	}
+        } catch (IllegalArgumentException e) {
+            LOGGER.info("Cancel password recovery for non existing user {}", emailAddress);
+        }
     }
 
     /**
@@ -113,9 +113,9 @@ public class RecoveryService {
      *             The token was not valid
      */
     public String changePassword(final int processId, final PasswordRecoveryToken token)
-	    throws InvalidPasswordRecoveryProcessException {
+            throws InvalidPasswordRecoveryProcessException {
 
-	return changePasswordService.changePassword(processId, token);
+        return changePasswordService.changePassword(processId, token);
     }
 
     /**
@@ -123,8 +123,8 @@ public class RecoveryService {
      */
     @Scheduled(cron = "59 59 3 * * *")
     public void purgeExpired() {
-	LOGGER.info("Purge expired recovery tokens");
-	tokenRepository.deleteByExpirationLessThan(Instant.now());
+        LOGGER.info("Purge expired recovery tokens");
+        tokenRepository.deleteByExpirationLessThan(Instant.now());
     }
 
 }

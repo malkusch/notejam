@@ -51,7 +51,7 @@ public class PasswordRecoveryMailer {
 
     /**
      * Builds the mailer.
-     * 
+     *
      * @param sender
      *            sender of the mail
      * @param messageSource
@@ -61,16 +61,16 @@ public class PasswordRecoveryMailer {
      */
     @Autowired
     PasswordRecoveryMailer(@Value("${email.sender}") final String sender, final MessageSource messageSource,
-	    final Optional<MailSender> mailTransport) {
+            final Optional<MailSender> mailTransport) {
 
-	this.sender = sender;
-	this.messageSource = messageSource;
-	this.mailTransport = mailTransport;
+        this.sender = sender;
+        this.messageSource = messageSource;
+        this.mailTransport = mailTransport;
     }
 
     /**
      * Sends the password recovery mail.
-     * 
+     *
      * @param receiver
      *            email address of the receiver
      * @param uri
@@ -80,19 +80,20 @@ public class PasswordRecoveryMailer {
      */
     @Async("mailExecutor")
     public void sendRecoveryMail(final EmailAddress receiver, final URI uri, final Locale locale) {
-	if (!mailTransport.isPresent()) {
-	    LOGGER.warn("Mail transport is not available. Consider setting the property spring.mail.host in the file application.properties.");
-	    return;
-	}
+        if (!mailTransport.isPresent()) {
+            LOGGER.warn(
+                    "Mail transport is not available. Consider setting the property spring.mail.host in the file application.properties.");
+            return;
+        }
 
-	SimpleMailMessage message = new SimpleMailMessage();
+        SimpleMailMessage message = new SimpleMailMessage();
 
-	message.setFrom(sender);
-	message.setTo(receiver.toString());
-	message.setSubject(messageSource.getMessage("forgot.mail.subject", null, locale));
-	message.setText(messageSource.getMessage("forgot.mail.message", new URI[] { uri }, locale));
+        message.setFrom(sender);
+        message.setTo(receiver.toString());
+        message.setSubject(messageSource.getMessage("forgot.mail.subject", null, locale));
+        message.setText(messageSource.getMessage("forgot.mail.message", new URI[] { uri }, locale));
 
-	mailTransport.get().send(message);
+        mailTransport.get().send(message);
     }
 
 }

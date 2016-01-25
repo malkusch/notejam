@@ -37,8 +37,8 @@ public class RandomStringGenerator {
      */
     @Autowired
     RandomStringGenerator(final Random random, @Value("${recovery.length}") final int passwordLength) {
-	this.random = random;
-	this.passwordLength = passwordLength;
+        this.random = random;
+        this.passwordLength = passwordLength;
     }
 
     /**
@@ -47,7 +47,7 @@ public class RandomStringGenerator {
      * @return The generated password
      */
     public String generatePassword() {
-	return RandomStringUtils.randomAlphanumeric(passwordLength);
+        return RandomStringUtils.randomAlphanumeric(passwordLength);
     }
 
     /**
@@ -59,7 +59,7 @@ public class RandomStringGenerator {
      *      How to generate a random alpha-numeric string?</a>
      */
     public String generateAlphaNumericString() {
-	return new BigInteger(130, random).toString(32);
+        return new BigInteger(130, random).toString(32);
     }
 
 }

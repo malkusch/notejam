@@ -53,7 +53,7 @@ public final class EmailAddress implements Serializable {
         if (emailAddress.isEmpty()) {
             throw new IllegalArgumentException("An email address must not be empty.");
         }
-        
+
         EmailValidator validator = new EmailValidator();
         if (!validator.isValid(emailAddress, null)) {
             throw new IllegalArgumentException("An email address must be valid.");
@@ -76,7 +76,7 @@ public final class EmailAddress implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof EmailAddress) {
             EmailAddress other = (EmailAddress) obj;
             return address.equals(other.address);

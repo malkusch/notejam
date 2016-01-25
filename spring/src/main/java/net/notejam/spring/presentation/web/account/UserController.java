@@ -31,13 +31,13 @@ final class UserController {
 
     /**
      * Builds the controller with its dependencies.
-     * 
+     *
      * @param userService
      *            user service
      */
     @Autowired
     UserController(final UserService userService) {
-	this.userService = userService;
+        this.userService = userService;
     }
 
     /**
@@ -72,15 +72,15 @@ final class UserController {
             PlainTextPassword newPassword = new PlainTextPassword(changePassword.getNewPassword());
             PlainTextPassword oldPassword = new PlainTextPassword(changePassword.getCurrentPassword());
             userService.changePassword(oldPassword, newPassword);
-    
+
             return String.format("redirect:%s?success", URITemplates.SETTINGS);
-            
+
         } catch (WrongPasswordException e) {
             errors.rejectValue("currentPassword", "CurrentPassword");
             return showChangePasswordForm(changePassword);
         }
     }
-    
+
     /**
      * Shows the sign up form.
      *
@@ -90,7 +90,7 @@ final class UserController {
      */
     @RequestMapping(method = RequestMethod.GET, path = URITemplates.SIGNUP)
     String showSignUpForm(final SignupUser signupUser) {
-	return "user/signup";
+        return "user/signup";
     }
 
     /**
@@ -105,18 +105,19 @@ final class UserController {
     @RequestMapping(method = RequestMethod.POST, path = URITemplates.SIGNUP)
     String signUp(@Valid final SignupUser signupUser, final Errors errors) {
 
-	if (errors.hasErrors()) {
-	    return showSignUpForm(signupUser);
-	}
+        if (errors.hasErrors()) {
+            return showSignUpForm(signupUser);
+        }
 
-	try {
-	    userService.signUp(new EmailAddress(signupUser.getEmailAddress()), new PlainTextPassword(signupUser.getPassword()));
-	    return String.format("redirect:%s?signup", URITemplates.SIGNIN);
-	    
-	} catch (EmailAddressExistsException e) {
-	    errors.rejectValue("emailAddress", "UniqueEmail");
-	    return showSignUpForm(signupUser);
-	}
+        try {
+            userService.signUp(new EmailAddress(signupUser.getEmailAddress()),
+                    new PlainTextPassword(signupUser.getPassword()));
+            return String.format("redirect:%s?signup", URITemplates.SIGNIN);
+
+        } catch (EmailAddressExistsException e) {
+            errors.rejectValue("emailAddress", "UniqueEmail");
+            return showSignUpForm(signupUser);
+        }
     }
 
 }

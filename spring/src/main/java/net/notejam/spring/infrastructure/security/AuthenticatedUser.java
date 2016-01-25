@@ -26,8 +26,8 @@ public final class AuthenticatedUser extends org.springframework.security.core.u
      *            user
      */
     public AuthenticatedUser(final User user) {
-	super(user.getEmailAddress().toString(), user.getPassword().toString(), new ArrayList<>());
-	this.user = user;
+        super(user.getEmailAddress().toString(), user.getPassword().toString(), new ArrayList<>());
+        this.user = user;
     }
 
     /**
@@ -36,7 +36,7 @@ public final class AuthenticatedUser extends org.springframework.security.core.u
      * @return user
      */
     public User getUser() {
-	return user;
+        return user;
     }
 
 }

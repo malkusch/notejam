@@ -12,16 +12,17 @@ final class EditPad implements CreatePad {
      * The pad name.
      */
     private String name;
-    
+
     /**
      * Sets the name.
      *
-     * @param name Pad name
+     * @param name
+     *            Pad name
      */
     public void setName(final String name) {
         this.name = name;
     }
-    
+
     @Override
     public String getName() {
         return name;
