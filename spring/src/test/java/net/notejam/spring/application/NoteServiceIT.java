@@ -29,7 +29,7 @@ import net.notejam.spring.test.SignedUpUserProvider;
 @IntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @WithUserDetails(SignedUpUserProvider.EMAIL)
-public class NoteServiceIntegrationTest {
+public class NoteServiceIT {
 
     @Autowired
     private NoteService service;

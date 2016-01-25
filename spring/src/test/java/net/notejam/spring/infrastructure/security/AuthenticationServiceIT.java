@@ -21,7 +21,7 @@ import net.notejam.spring.test.SignedUpUserProvider;
  */
 @IntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
-public class AuthenticationServiceIntegrationTest {
+public class AuthenticationServiceIT {
 
     @Autowired
     private AuthenticationService service;

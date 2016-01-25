@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.access.AccessDeniedException;
@@ -28,6 +29,7 @@ public class AuthorizationServiceTest {
     /**
      * The SUT
      */
+    @InjectMocks
     private AuthorizationService service;
 
     private User authenticatedUser = buildUser();
@@ -48,8 +50,6 @@ public class AuthorizationServiceTest {
 	when(authenticationService.authenticatedUser()).thenReturn(authenticatedUser);
 	when(ownedEntity.getOwner()).thenReturn(authenticatedUser);
 	when(notOwnedEntity.getOwner()).thenReturn(otherUser);
-	
-	service = new AuthorizationService(authenticationService);
     }
     
     /**

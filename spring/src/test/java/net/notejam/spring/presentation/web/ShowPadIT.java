@@ -1,12 +1,11 @@
 package net.notejam.spring.presentation.web;
 
 import static net.notejam.spring.test.UriUtil.buildUri;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -19,14 +18,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import net.notejam.spring.application.PadService;
 import net.notejam.spring.domain.Name;
 import net.notejam.spring.domain.Pad;
-import net.notejam.spring.domain.PadRepository;
 import net.notejam.spring.presentation.URITemplates;
 import net.notejam.spring.test.IntegrationTest;
 import net.notejam.spring.test.MockMvcProvider;
 import net.notejam.spring.test.SignedUpUserProvider;
 
 /**
- * An integration test for the {@link DeletePadController}.
+ * An integration test for showing a pad.
  *
  * @author markus@malkusch.de
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
@@ -34,7 +32,7 @@ import net.notejam.spring.test.SignedUpUserProvider;
 @IntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @WithUserDetails(SignedUpUserProvider.EMAIL)
-public class DeletePadTest {
+public class ShowPadIT {
 
     @Rule
     @Autowired
@@ -46,9 +44,6 @@ public class DeletePadTest {
     
     @Autowired
     private PadService padService;
-    
-    @Autowired
-    private PadRepository repository;
     
     private Pad pad;
     
@@ -65,34 +60,28 @@ public class DeletePadTest {
     public void setUri() {
         setPad();
         
-        uri = buildUri(URITemplates.DELETE_PAD, pad.getId());
+        uri = buildUri(URITemplates.VIEW_PAD, pad.getId());
     }
     
     /**
-     * Pad can be deleted by its owner.
+     * Pad can be viewed by its owner.
      */
     @Test
-    public void padCanBeDeleted() throws Exception {
-        mockMvcProvider.getMockMvc().perform(post(uri)
-                .with(csrf()))
-
-            .andExpect(status().is3xxRedirection());
-        
-        assertNull(repository.findOne(pad.getId()));
+    public void padCanBeViewed() throws Exception {
+        mockMvcProvider.getMockMvc().perform(get(uri))
+            .andExpect(model().hasNoErrors())
+            .andExpect(status().is2xxSuccessful())
+            .andExpect(view().name("notes"));
     }
     
     /**
-     * Pad can't be deleted by not an owner.
+     * pad can't be viewed by not an owner
      */
     @Test
-    public void padCannotBeDeletedByOtherUser() throws Exception {
-        mockMvcProvider.getMockMvc().perform(post(uri)
-                .with(csrf())
+    public void padCannotBeViewedByOtherUser() throws Exception {
+        mockMvcProvider.getMockMvc().perform(get(uri)
                 .with(user(userProvider.getAnotherAuthenticatedUser())))
-
             .andExpect(status().is(403));
-        
-        assertNotNull(repository.findOne(pad.getId()));
     }
     
 }

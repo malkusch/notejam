@@ -34,7 +34,7 @@ import net.notejam.spring.test.MockMvcProvider;
  */
 @IntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
-public class SignupControllerTest {
+public class SignupControllerIT{
 
     @Autowired
     private AuthenticationManager authenticationManager;

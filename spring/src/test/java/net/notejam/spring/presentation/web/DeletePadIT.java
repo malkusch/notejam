@@ -8,8 +8,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Optional;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,17 +16,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import net.notejam.spring.application.NoteService;
+import net.notejam.spring.application.PadService;
 import net.notejam.spring.domain.Name;
-import net.notejam.spring.domain.Note;
-import net.notejam.spring.domain.NoteRepository;
+import net.notejam.spring.domain.Pad;
+import net.notejam.spring.domain.PadRepository;
 import net.notejam.spring.presentation.URITemplates;
 import net.notejam.spring.test.IntegrationTest;
 import net.notejam.spring.test.MockMvcProvider;
 import net.notejam.spring.test.SignedUpUserProvider;
 
 /**
- * An integration test for deleting a note.
+ * An integration test for the {@link DeletePadController}.
  *
  * @author markus@malkusch.de
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
@@ -36,7 +34,7 @@ import net.notejam.spring.test.SignedUpUserProvider;
 @IntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @WithUserDetails(SignedUpUserProvider.EMAIL)
-public class DeleteNoteTest {
+public class DeletePadIT {
 
     @Rule
     @Autowired
@@ -47,53 +45,54 @@ public class DeleteNoteTest {
     public SignedUpUserProvider userProvider;
     
     @Autowired
-    private NoteRepository repository;
+    private PadService padService;
     
     @Autowired
-    private NoteService service;
+    private PadRepository repository;
     
-    private Note note;
+    private Pad pad;
     
     /**
      * The edit note uri.
      */
     private String uri;
     
-    @Before
-    public void setNote() {
-        note = service.writeNote(new Name("name"), userProvider.getUser(), Optional.empty(), "text");
+    private void setPad() {
+        pad = padService.createPad(new Name("name"), userProvider.getUser());
     }
     
     @Before
     public void setUri() {
-        uri = buildUri(URITemplates.DELETE_NOTE, note.getId());
+        setPad();
+        
+        uri = buildUri(URITemplates.DELETE_PAD, pad.getId());
     }
-
+    
     /**
-     * Note can be deleted by its owner.
+     * Pad can be deleted by its owner.
      */
     @Test
-    public void noteCanBeDeleted() throws Exception {
+    public void padCanBeDeleted() throws Exception {
         mockMvcProvider.getMockMvc().perform(post(uri)
                 .with(csrf()))
 
             .andExpect(status().is3xxRedirection());
         
-        assertNull(repository.findOne(note.getId()));
+        assertNull(repository.findOne(pad.getId()));
     }
     
     /**
-     * Note can't be deleted by not an owner.
+     * Pad can't be deleted by not an owner.
      */
     @Test
-    public void noteCannotBeDeletedByOtherUser() throws Exception {
+    public void padCannotBeDeletedByOtherUser() throws Exception {
         mockMvcProvider.getMockMvc().perform(post(uri)
                 .with(csrf())
                 .with(user(userProvider.getAnotherAuthenticatedUser())))
 
             .andExpect(status().is(403));
         
-        assertNotNull(repository.findOne(note.getId()));
+        assertNotNull(repository.findOne(pad.getId()));
     }
     
 }

@@ -18,7 +18,7 @@ import net.notejam.spring.test.IntegrationTest;
  */
 @IntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
-public class UserFactoryTest {
+public class UserFactoryIT {
 
     @Autowired
     private UserRepository repository;

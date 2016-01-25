@@ -34,7 +34,7 @@ import net.notejam.spring.test.SignedUpUserProvider;
 @IntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @WithUserDetails(SignedUpUserProvider.EMAIL)
-public class ShowNoteTest {
+public class ShowNoteIT {
 
     @Rule
     @Autowired

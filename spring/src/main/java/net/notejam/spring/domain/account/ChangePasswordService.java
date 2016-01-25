@@ -109,10 +109,11 @@ public class ChangePasswordService {
 	}
 
 	String password = passwordGenerator.generatePassword();
-	User user = recoveryProcess.user();
 	EncodedPassword encodedPassword = encodingService.encode(new PlainTextPassword(password));
 
+	User user = recoveryProcess.user();
 	user.changePassword(encodedPassword);
+
 	processRepository.delete(recoveryProcess);
 
 	return password;

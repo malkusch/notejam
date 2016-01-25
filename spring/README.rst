@@ -71,12 +71,19 @@ Go to http://localhost:8080/ in your browser.
 Run tests
 ---------
 
-Run functional and unit tests:
+Run unit tests:
 
 .. code-block:: bash
 
     $ cd YOUR_PROJECT_DIR/spring/
     $ mvn test
+
+Run unit and integration tests:
+
+.. code-block:: bash
+
+    $ cd YOUR_PROJECT_DIR/spring/
+    $ mvn verify
 
 ============
 Contribution

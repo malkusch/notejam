@@ -1,11 +1,14 @@
 package net.notejam.spring.presentation.web;
 
 import static net.notejam.spring.test.UriUtil.buildUri;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -15,16 +18,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import net.notejam.spring.application.PadService;
+import net.notejam.spring.application.NoteService;
 import net.notejam.spring.domain.Name;
-import net.notejam.spring.domain.Pad;
+import net.notejam.spring.domain.Note;
+import net.notejam.spring.domain.NoteRepository;
 import net.notejam.spring.presentation.URITemplates;
 import net.notejam.spring.test.IntegrationTest;
 import net.notejam.spring.test.MockMvcProvider;
 import net.notejam.spring.test.SignedUpUserProvider;
 
 /**
- * An integration test for showing a pad.
+ * An integration test for deleting a note.
  *
  * @author markus@malkusch.de
  * @see <a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a>
@@ -32,7 +36,7 @@ import net.notejam.spring.test.SignedUpUserProvider;
 @IntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @WithUserDetails(SignedUpUserProvider.EMAIL)
-public class ShowPadTest {
+public class DeleteNoteIT {
 
     @Rule
     @Autowired
@@ -43,45 +47,53 @@ public class ShowPadTest {
     public SignedUpUserProvider userProvider;
     
     @Autowired
-    private PadService padService;
+    private NoteRepository repository;
     
-    private Pad pad;
+    @Autowired
+    private NoteService service;
+    
+    private Note note;
     
     /**
      * The edit note uri.
      */
     private String uri;
     
-    private void setPad() {
-        pad = padService.createPad(new Name("name"), userProvider.getUser());
+    @Before
+    public void setNote() {
+        note = service.writeNote(new Name("name"), userProvider.getUser(), Optional.empty(), "text");
     }
     
     @Before
     public void setUri() {
-        setPad();
+        uri = buildUri(URITemplates.DELETE_NOTE, note.getId());
+    }
+
+    /**
+     * Note can be deleted by its owner.
+     */
+    @Test
+    public void noteCanBeDeleted() throws Exception {
+        mockMvcProvider.getMockMvc().perform(post(uri)
+                .with(csrf()))
+
+            .andExpect(status().is3xxRedirection());
         
-        uri = buildUri(URITemplates.VIEW_PAD, pad.getId());
+        assertNull(repository.findOne(note.getId()));
     }
     
     /**
-     * Pad can be viewed by its owner.
+     * Note can't be deleted by not an owner.
      */
     @Test
-    public void padCanBeViewed() throws Exception {
-        mockMvcProvider.getMockMvc().perform(get(uri))
-            .andExpect(model().hasNoErrors())
-            .andExpect(status().is2xxSuccessful())
-            .andExpect(view().name("notes"));
-    }
-    
-    /**
-     * pad can't be viewed by not an owner
-     */
-    @Test
-    public void padCannotBeViewedByOtherUser() throws Exception {
-        mockMvcProvider.getMockMvc().perform(get(uri)
+    public void noteCannotBeDeletedByOtherUser() throws Exception {
+        mockMvcProvider.getMockMvc().perform(post(uri)
+                .with(csrf())
                 .with(user(userProvider.getAnotherAuthenticatedUser())))
+
             .andExpect(status().is(403));
+        
+        assertNotNull(repository.findOne(note.getId()));
     }
     
 }

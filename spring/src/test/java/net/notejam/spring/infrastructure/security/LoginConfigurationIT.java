@@ -25,7 +25,7 @@ import net.notejam.spring.test.SignedUpUserProvider;
  */
 @IntegrationTest
 @RunWith(SpringJUnit4ClassRunner.class)
-public class LoginConfigurationTest {
+public class LoginConfigurationIT {
 
     @Rule
     @Autowired
